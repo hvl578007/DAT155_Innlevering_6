@@ -86,7 +86,7 @@ async function main() {
      * We are using the async/await language constructs of Javascript:
      *  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
      */
-    const heightmapImage = await Utilities.loadImage('resources/images/heightmap.png');
+    const heightmapImage = await Utilities.loadImage('resources/images/heightmapper_sand.png');
     const width = 100;
 
     const simplex = new SimplexNoise();
@@ -94,7 +94,7 @@ async function main() {
         width,
         heightmapImage,
         // noiseFn: simplex.noise.bind(simplex),
-        numberOfSubdivisions: 128,
+        numberOfSubdivisions: 256,
         height: 20
     });
 
