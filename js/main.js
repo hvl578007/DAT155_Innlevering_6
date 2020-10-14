@@ -18,9 +18,12 @@ import TextureSplattingMaterial from './materials/TextureSplattingMaterial.js';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry.js';
 import { GLTFLoader } from './loaders/GLTFLoader.js';
 import { SimplexNoise } from './lib/SimplexNoise.js';
+import Stats from './lib/Stats.js';
 
 async function main() {
 
+    //TODO putte slikt i eigen klasse?
+    //set opp scenen og renderer og diverse greier
     const scene = new Scene();
 
     const axesHelper = new AxesHelper(15);
@@ -53,8 +56,15 @@ async function main() {
      */
     document.body.appendChild(renderer.domElement);
 
+    let stats = new Stats();
+    stats.showPanel(0);
+    document.body.appendChild(stats.dom);
+    // --------------------------------------------------------------------------------------
+
     /**
      * Add light
+     * 
+     * TODO eigen klasse som opprettar og held på med dette?
      */
     const directionalLight = new DirectionalLight(0xffffff);
     directionalLight.position.set(300, 400, 0);
@@ -73,10 +83,14 @@ async function main() {
     directionalLight.target.position.set(0, 15, 0);
     scene.add(directionalLight.target);
 
+    // --------------------------------------------------------------------------------------
+
+    //set startposisjonen til kameraet?
     camera.position.z = 70;
     camera.position.y = 55;
     camera.rotation.x -= Math.PI * 0.25;
 
+    // --------------------------------------------------------------------------------------
 
     /**
      * Add terrain:
@@ -85,9 +99,12 @@ async function main() {
      * There are many ways to handle asynchronous flow in your application.
      * We are using the async/await language constructs of Javascript:
      *  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+     * 
+     * 
+     * todo eigen klasse for å fikse terrenget?
      */
     const heightmapImage = await Utilities.loadImage('resources/images/heightmapper_sand.png');
-    const width = 100;
+    const width = 200;
 
     const simplex = new SimplexNoise();
     const terrainGeometry = new TerrainBufferGeometry({
@@ -125,8 +142,12 @@ async function main() {
 
     scene.add(terrain);
 
+    // --------------------------------------------------------------------------------------
+
     /**
      * Add trees
+     * 
+     * TODO putte dette i eigen klasse?
      */
 
     // instantiate a GLTFLoader:
@@ -177,6 +198,8 @@ async function main() {
         }
     );
 
+    // --------------------------------------------------------------------------------------
+
     /**
      * Set up camera controller:
      */
@@ -186,6 +209,8 @@ async function main() {
     // We attach a click lister to the canvas-element so that we can request a pointer lock.
     // https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API
     const canvas = renderer.domElement;
+
+    //TODO lage eigen klasse med lyttarar og slikt frå vinduet
 
     canvas.addEventListener('click', () => {
         canvas.requestPointerLock();
@@ -199,6 +224,8 @@ async function main() {
         yaw += event.movementX * mouseSensitivity;
         pitch += event.movementY * mouseSensitivity;
     }
+
+    //TODO lage eigen klasse med lyttarar og slikt frå vinduet
 
     document.addEventListener('pointerlockchange', () => {
         if (document.pointerLockElement === canvas) {
@@ -216,6 +243,8 @@ async function main() {
         speed: 0.01
     };
 
+    //TODO lage eigen klasse med lyttarar og slikt frå vinduet
+
     window.addEventListener('keydown', (e) => {
         if (e.code === 'KeyW') {
             move.forward = true;
@@ -231,6 +260,8 @@ async function main() {
             e.preventDefault();
         }
     });
+
+    //TODO lage eigen klasse med lyttarar og slikt frå vinduet
 
     window.addEventListener('keyup', (e) => {
         if (e.code === 'KeyW') {
@@ -250,8 +281,12 @@ async function main() {
 
     const velocity = new Vector3(0.0, 0.0, 0.0);
 
+    //TODO putte i eigen klasse som tar for seg "speleloopen"
+
     let then = performance.now();
     function loop(now) {
+
+        stats.begin();
 
         const delta = now - then;
         then = now;
@@ -285,8 +320,12 @@ async function main() {
         velocity.applyQuaternion(camera.quaternion);
         camera.position.add(velocity);
 
+        camera.position.setY(terrainGeometry.getHeightAt(camera.position.x, camera.position.z) + 1);
+
         // render scene:
         renderer.render(scene, camera);
+
+        stats.end();
 
         requestAnimationFrame(loop);
 
