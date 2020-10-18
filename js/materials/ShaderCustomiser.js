@@ -1,3 +1,4 @@
+"use strict";
 
 import { ShaderChunk } from '../lib/three.module.js';
 

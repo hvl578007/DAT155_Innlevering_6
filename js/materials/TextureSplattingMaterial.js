@@ -1,3 +1,4 @@
+"use strict";
 
 import { ShaderMaterial, Color, ShaderLib, UniformsLib, UniformsUtils } from '../lib/three.module.js';
 

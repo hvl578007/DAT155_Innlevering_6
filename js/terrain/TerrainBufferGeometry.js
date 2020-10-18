@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Terrain geometry based on PlaneBufferGeometry.
  */
