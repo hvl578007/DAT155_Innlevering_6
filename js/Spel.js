@@ -7,10 +7,9 @@ import {
     Scene,
     Vector3, WebGLRenderer
 } from './lib/three.module.js';
-import Utilities from './lib/Utilities.js';
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
-import ObjektPlasserer from './terrain/TrePlasserer.js';
+import ObjektPlasserer from './terrain/ObjektPlasserer.js';
 
 
 export default class Spel {
