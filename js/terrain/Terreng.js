@@ -19,8 +19,8 @@ export default class Terreng extends Mesh {
             width,
             heightmapImage,
             // noiseFn: simplex.noise.bind(simplex),
-            numberOfSubdivisions: 128,
-            height: 60
+            numberOfSubdivisions: 256,
+            height: 20
         });
 
         const grassTexture = new TextureLoader().load('./resources/textures/grass_02.png');
