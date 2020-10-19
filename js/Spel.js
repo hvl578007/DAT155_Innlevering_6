@@ -10,6 +10,7 @@ import {
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
 import ObjektPlasserer from './terrain/ObjektPlasserer.js';
+import { GLTFLoader } from './loaders/GLTFLoader.js';
 
 
 export default class Spel {
@@ -93,7 +94,33 @@ export default class Spel {
          */
 
         let objPlasserer = new ObjektPlasserer();
-        objPlasserer.plasserTrer(terreng.terrengGeometri);
+        objPlasserer.plasserTrer(terreng.terrengGeometri, scene);
+
+        const loader = new GLTFLoader();
+
+        loader.load(
+            './resources/models/james_bond_golden_gun/ggun.gltf',
+            (object) => {
+                const gun = object.scene.children[0].clone();
+
+                gun.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+
+                gun.position.z = -3;
+                gun.position.y = -1;
+                gun.position.x = 1.5;
+                gun.rotation.z = 3.25;
+                gun.scale.multiplyScalar(1/16);
+
+                camera.add(gun);
+            }
+        );
+
+        scene.add(camera);
 
 
         // --------------------------------------------------------------------------------------
