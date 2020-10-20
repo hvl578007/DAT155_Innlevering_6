@@ -2,7 +2,7 @@
 
 import { GLTFLoader } from "../loaders/GLTFLoader.js";
 
-export default class ObjektPlasserer {
+export default class ModellImport {
 
     constructor() {
 
@@ -13,9 +13,9 @@ export default class ObjektPlasserer {
     plasserTrer(terrengGeometri, scene) {
 
         // instantiate a GLTFLoader:
-        const loader = new GLTFLoader();
+        //const loader = new GLTFLoader();
 
-        loader.load(
+        this.loader.load(
             // resource URL
             'resources/models/kenney_nature_kit/tree_thin.glb',
             // called when resource is loaded
@@ -62,7 +62,25 @@ export default class ObjektPlasserer {
 
     }
 
-    lastInnObjekt(ressursURL) {
-        
+    lastInnGLTFModell(ressursURL) {
+
+        //fungerer ikkje...
+        let objekt = null;
+
+        this.loader.load(
+            ressursURL,
+            (obj) => {
+                objekt = obj.scene.children[0].clone();
+
+                objekt.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+            }
+        );
+
+        return objekt;
     }
 }

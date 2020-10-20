@@ -9,8 +9,8 @@ import {
 } from './lib/three.module.js';
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
-import ObjektPlasserer from './terrain/ObjektPlasserer.js';
 import { GLTFLoader } from './loaders/GLTFLoader.js';
+import ModellImport from './terrain/ModellImport.js';
 
 
 export default class Spel {
@@ -93,8 +93,8 @@ export default class Spel {
          *
          */
 
-        let objPlasserer = new ObjektPlasserer();
-        objPlasserer.plasserTrer(terreng.terrengGeometri, scene);
+        let modellImport = new ModellImport();
+        modellImport.plasserTrer(terreng.terrengGeometri, scene);
 
         const loader = new GLTFLoader();
 
