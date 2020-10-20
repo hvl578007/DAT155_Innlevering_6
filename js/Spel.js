@@ -11,6 +11,7 @@ import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
 import { GLTFLoader } from './loaders/GLTFLoader.js';
 import ModellImport from './terrain/ModellImport.js';
+import Vatn from './terrain/Vatn.js';
 
 
 export default class Spel {
@@ -121,6 +122,11 @@ export default class Spel {
         );
 
         scene.add(camera);
+
+        let vatn = new Vatn();
+        vatn.position.y = 0.8;
+
+        terreng.add(vatn);
 
 
         // --------------------------------------------------------------------------------------
