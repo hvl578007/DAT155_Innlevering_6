@@ -61,4 +61,8 @@ export default class ObjektPlasserer {
         );
 
     }
+
+    lastInnObjekt(ressursURL) {
+        
+    }
 }

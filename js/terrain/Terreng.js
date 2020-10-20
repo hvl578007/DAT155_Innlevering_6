@@ -11,8 +11,9 @@ export default class Terreng extends Mesh {
     //TODO fiks namnet
     //Skal den utvide noko?
 
+    //TODO fleire parametre i konstruktøren
     constructor(heightmapImage) {
-        const width = 400;
+        const width = 600;
 
         const simplex = new SimplexNoise();
         const terrainGeometry = new TerrainBufferGeometry({
