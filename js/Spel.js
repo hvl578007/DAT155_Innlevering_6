@@ -110,11 +110,11 @@ export default class Spel {
                     }
                 });
 
-                gun.position.z = -2.5;
+                gun.position.z = -3;
                 gun.position.y = -1;
                 gun.position.x = 1.5;
-                gun.rotation.z = 3.21;
-                gun.scale.multiplyScalar(1/20);
+                gun.rotation.z = 3.25;
+                gun.scale.multiplyScalar(1/16);
 
                 camera.add(gun);
             }
@@ -245,8 +245,7 @@ export default class Spel {
             velocity.applyQuaternion(camera.quaternion);
             camera.position.add(velocity);
 
-            //kamera følger terrenget
-            camera.position.setY(terreng.terrengGeometri.getHeightAt(camera.position.x, camera.position.z) + 3);
+            camera.position.setY(terreng.terrengGeometri.getHeightAt(camera.position.x, camera.position.z) + 1);
 
             // render scene:
             renderer.render(scene, camera);
