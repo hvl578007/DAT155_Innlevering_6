@@ -13,15 +13,15 @@ export default class LysLager {
 
     lagRetningslys() {
         let retningslys = new DirectionalLight(0xffffff);
-        retningslys.position.set(300, 400, 0);
+        retningslys.position.set(300, 600, 300);
 
         retningslys.castShadow = true;
 
         //Set up shadow properties for the light
-        retningslys.shadow.mapSize.width = 512;
-        retningslys.shadow.mapSize.height = 512;
+        retningslys.shadow.mapSize.width = 2048;
+        retningslys.shadow.mapSize.height = 2048;
         retningslys.shadow.camera.near = 0.5;
-        retningslys.shadow.camera.far = 2000;
+        retningslys.shadow.camera.far = 3000;
 
         // Set direction
         retningslys.target.position.set(0, 15, 0);

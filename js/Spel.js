@@ -23,6 +23,7 @@ export default class Spel {
         const scene = new Scene();
 
         const axesHelper = new AxesHelper(15);
+        axesHelper.position.y = 5;
         scene.add(axesHelper);
 
         const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -65,6 +66,7 @@ export default class Spel {
         const retningslys = lys.lagRetningslys();
 
         scene.add(retningslys);
+        //retningslys.target = camera;
         scene.add(retningslys.target);
 
         // --------------------------------------------------------------------------------------
@@ -95,15 +97,19 @@ export default class Spel {
          */
 
         let modellImport = new ModellImport();
+        //plasserer rundt trer i scenen (burde bruke terrenget heller)
         modellImport.plasserTrer(terreng.terrengGeometri, scene);
 
         const loader = new GLTFLoader();
 
+        //laster inn eit gltf-objekt (golden gun)
         loader.load(
             './resources/models/james_bond_golden_gun/ggun.gltf',
             (object) => {
+                //henter ut objektet (usikker på kvifor akkuratt dette)
                 const gun = object.scene.children[0].clone();
 
+                //usikker, men vil lage skygge og få skygge?
                 gun.traverse((child) => {
                     if (child.isMesh) {
                         child.castShadow = true;
@@ -111,21 +117,29 @@ export default class Spel {
                     }
                 });
 
-                gun.position.z = -3;
-                gun.position.y = -1;
-                gun.position.x = 1.5;
+                //posisjonerer våpnet
+                gun.position.z = -1.5;
+                gun.position.y = -0.7;
+                gun.position.x = 1;
+                //roterer våpnet litt 
                 gun.rotation.z = 3.25;
-                gun.scale.multiplyScalar(1/16);
+                //gjer våpnet mindre for å ikkje klippe inn i ting
+                gun.scale.multiplyScalar(1/40);
 
+                //legg til våpnet under kamera slik at den følger med der
                 camera.add(gun);
             }
         );
 
+        //legg til kamera i scenen slik at våpnet vil bli vist
         scene.add(camera);
 
+        //lagar eit nytt vatn som skal plasserast i terrenget
         let vatn = new Vatn();
+        //flytter vatnet litt over 0
         vatn.position.y = 0.8;
 
+        //legg til vatnet i terrenget
         terreng.add(vatn);
 
 
@@ -134,6 +148,8 @@ export default class Spel {
         /**
          * Set up camera controller:
          */
+
+        //TODO kamera som bedre passar med FPS
 
         const mouseLookController = new MouseLookController(camera);
 
@@ -251,7 +267,8 @@ export default class Spel {
             velocity.applyQuaternion(camera.quaternion);
             camera.position.add(velocity);
 
-            camera.position.setY(terreng.terrengGeometri.getHeightAt(camera.position.x, camera.position.z) + 1);
+            //set posisjonen til kameraet litt over bakken
+            camera.position.setY(terreng.terrengGeometri.getHeightAt(camera.position.x, camera.position.z) + 3);
 
             // render scene:
             renderer.render(scene, camera);
