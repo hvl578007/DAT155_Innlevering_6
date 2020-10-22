@@ -5,13 +5,15 @@ import Stats from './lib/Stats.js';
 import {
     AxesHelper, PCFSoftShadowMap, PerspectiveCamera,
     Scene,
-    Vector3, WebGLRenderer
+    Vector3, WebGLRenderer,
+    BackSide
 } from './lib/three.module.js';
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
 import { GLTFLoader } from './loaders/GLTFLoader.js';
 import ModellImport from './terrain/ModellImport.js';
 import Vatn from './terrain/Vatn.js';
+import Skydome from './skydome/Skydome.js';
 
 
 export default class Spel {
@@ -141,6 +143,16 @@ export default class Spel {
 
         //legg til vatnet i terrenget
         terreng.add(vatn);
+
+        //alt kjører bra, men kan ikke se skydomen?? skal være grå farget men alt er hvitt i skyene.
+        //lager og legger til skydome
+        let skyDome = new Skydome();
+        //endrer slik at skydomen rendres innenfra
+        skyDome.material.side = BackSide;
+        skyDome.position.y = 5000;
+
+        //legger til skydome i scenen
+        scene.add(skyDome);
 
 
         // --------------------------------------------------------------------------------------
