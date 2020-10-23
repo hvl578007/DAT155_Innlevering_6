@@ -6,10 +6,10 @@ export default class Skydome extends Mesh {
 
     constructor(){
 
-        let skydomeGeometry = new SphereGeometry(3000,60,40);
+        let skydomeGeometry = new SphereGeometry(350,64,64);
         let skydomeMaterial = new MeshPhongMaterial({
-            color: 0x808080
-            //map: new TextureLoader().load('./resources/textures/grass_02.png')
+            color: 0x808080,
+            map: new TextureLoader().load('./resources/textures/grass_02.png')
         });
 
         super(skydomeGeometry, skydomeMaterial);

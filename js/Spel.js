@@ -91,6 +91,7 @@ export default class Spel {
 
         scene.add(terreng);
 
+
         // --------------------------------------------------------------------------------------
 
         /**
@@ -104,6 +105,7 @@ export default class Spel {
 
         const loader = new GLTFLoader();
 
+        //TODO legg i ein annan klasse (modellimport)
         //laster inn eit gltf-objekt (golden gun)
         loader.load(
             './resources/models/james_bond_golden_gun/ggun.gltf',
@@ -149,7 +151,7 @@ export default class Spel {
         let skyDome = new Skydome();
         //endrer slik at skydomen rendres innenfra
         skyDome.material.side = BackSide;
-        skyDome.position.y = 5000;
+        //skyDome.position.y = 5000; //<- denne setninga flytter skydome veldig høgt opp = kan ikkje sjå den lengre
 
         //legger til skydome i scenen
         scene.add(skyDome);
