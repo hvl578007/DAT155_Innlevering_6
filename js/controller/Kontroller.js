@@ -6,10 +6,10 @@ import EventHandler from "./EventHandler.js";
 export default class Kontroller {
 
     constructor() {
-        this.eventHandler = new EventHandler();
         this.spel = new Spel();
-        let now = performance.now()
-        this.spel.loop(now);
+        //this.eventHandler = new EventHandler(this.spel);
+        //let now = performance.now()
+        this.spel.loop();
     }
 
 }
