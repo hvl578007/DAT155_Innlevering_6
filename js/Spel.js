@@ -6,7 +6,9 @@ import {
     AxesHelper, PCFSoftShadowMap, PerspectiveCamera,
     Scene,
     Vector3, WebGLRenderer,
-    BackSide
+    BackSide,
+    AnimationMixer,
+    Clock
 } from './lib/three.module.js';
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
@@ -15,27 +17,29 @@ import ModellImport from './terrain/ModellImport.js';
 import Vatn from './terrain/Vatn.js';
 import Skydome from './skydome/Skydome.js';
 
+let goldenGunMixer;
+
 
 export default class Spel {
 
     constructor() {
 
         //TODO putte slikt i eigen klasse?
-        //set opp scenen og renderer og diverse greier
-        const scene = new Scene();
+        //set opp this.scenen og renderer og diverse greier
+        this.scene = new Scene();
 
         const axesHelper = new AxesHelper(15);
         axesHelper.position.y = 5;
-        scene.add(axesHelper);
+        this.scene.add(axesHelper);
 
-        const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-        const renderer = new WebGLRenderer({ antialias: true });
-        renderer.setClearColor(0xffffff);
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer = new WebGLRenderer({ antialias: true });
+        this.renderer.setClearColor(0xffffff);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = PCFSoftShadowMap;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = PCFSoftShadowMap;
 
         /**
          * Handle window resize:
@@ -44,21 +48,27 @@ export default class Spel {
          *  - update renderer size
          */
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
 
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
         }, false);
 
         /**
          * Add canvas element to DOM.
          */
-        document.body.appendChild(renderer.domElement);
+        document.body.appendChild(this.renderer.domElement);
 
-        let stats = new Stats();
-        stats.showPanel(0);
-        document.body.appendChild(stats.dom);
+        /**
+         * Legg til stats-counter (fps osv)
+         */
+
+        this.stats = new Stats();
+        this.stats.showPanel(0);
+        document.body.appendChild(this.stats.dom);
         // --------------------------------------------------------------------------------------
+
+        this.clock = new Clock();
 
         /**
          * Add light
@@ -67,16 +77,16 @@ export default class Spel {
         let lys = new LysLager();
         const retningslys = lys.lagRetningslys();
 
-        scene.add(retningslys);
+        this.scene.add(retningslys);
         //retningslys.target = camera;
-        scene.add(retningslys.target);
+        this.scene.add(retningslys.target);
 
         // --------------------------------------------------------------------------------------
 
         //set startposisjonen til kameraet?
-        camera.position.z = 70;
-        camera.position.y = 55;
-        camera.rotation.x -= Math.PI * 0.25;
+        this.camera.position.z = 70;
+        this.camera.position.y = 55;
+        this.camera.rotation.x -= Math.PI * 0.25;
 
         // --------------------------------------------------------------------------------------
 
@@ -86,57 +96,46 @@ export default class Spel {
          */
 
         let heightMapImage = document.getElementById("heightMap");
-        
-        let terreng = new Terreng(heightMapImage);
 
-        scene.add(terreng);
+        this.terreng = new Terreng(heightMapImage);
+
+        this.scene.add(this.terreng);
 
 
         // --------------------------------------------------------------------------------------
 
         /**
          * Add trees
+         * TODO bruk støy (gaussisk / normalfordeling) til å meir "naturleg plassere trer" + må ikkje plassere dei i vatnet ;)
          *
          */
 
         let modellImport = new ModellImport();
-        //plasserer rundt trer i scenen (burde bruke terrenget heller)
-        modellImport.plasserTrer(terreng.terrengGeometri, scene);
+        //plasserer rundt trer i this.scenen (burde bruke terrenget heller)
+        modellImport.plasserTrer(this.terreng.terrengGeometri, this.scene);
 
-        const loader = new GLTFLoader();
+        // --------------------------------------------------------------------------------------
 
-        //TODO legg i ein annan klasse (modellimport)
+        /**
+         * Legg til golden gun på kameraet / spelaren
+         */
+
+
         //laster inn eit gltf-objekt (golden gun)
-        loader.load(
-            './resources/models/james_bond_golden_gun/ggun.gltf',
-            (object) => {
-                //henter ut objektet (usikker på kvifor akkuratt dette)
-                const gun = object.scene.children[0].clone();
+        modellImport.lastInnGoldenGun(this.camera, goldenGunMixer);
 
-                //usikker, men vil lage skygge og få skygge?
-                gun.traverse((child) => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                    }
-                });
+        this.loader = new GLTFLoader();
 
-                //posisjonerer våpnet
-                gun.position.z = -1.5;
-                gun.position.y = -0.7;
-                gun.position.x = 1;
-                //roterer våpnet litt 
-                gun.rotation.z = 3.25;
-                //gjer våpnet mindre for å ikkje klippe inn i ting
-                gun.scale.multiplyScalar(1/40);
+        //console.log(goldenGunMixer);
 
-                //legg til våpnet under kamera slik at den følger med der
-                camera.add(gun);
-            }
-        );
+        //legg til kamera i this.scenen slik at våpnet vil bli vist
+        this.scene.add(this.camera);
 
-        //legg til kamera i scenen slik at våpnet vil bli vist
-        scene.add(camera);
+        // --------------------------------------------------------------------------------------
+
+        /**
+         * Legg til vatn i terrenget
+         */
 
         //lagar eit nytt vatn som skal plasserast i terrenget
         let vatn = new Vatn();
@@ -144,7 +143,13 @@ export default class Spel {
         vatn.position.y = 0.8;
 
         //legg til vatnet i terrenget
-        terreng.add(vatn);
+        this.terreng.add(vatn);
+
+        // --------------------------------------------------------------------------------------
+
+        /**
+         * Legg til skydome i this.scenen
+         */
 
         //alt kjører bra, men kan ikke se skydomen?? skal være grå farget men alt er hvitt i skyene.
         //lager og legger til skydome
@@ -153,9 +158,8 @@ export default class Spel {
         skyDome.material.side = BackSide;
         //skyDome.position.y = 5000; //<- denne setninga flytter skydome veldig høgt opp = kan ikkje sjå den lengre
 
-        //legger til skydome i scenen
-        scene.add(skyDome);
-
+        //legger til skydome i this.scenen
+        this.scene.add(skyDome);
 
         // --------------------------------------------------------------------------------------
 
@@ -165,59 +169,54 @@ export default class Spel {
 
         //TODO kamera som bedre passar med FPS
 
-        const mouseLookController = new MouseLookController(camera);
+        this.mouseLookController = new MouseLookController(this.camera);
 
         // We attach a click lister to the canvas-element so that we can request a pointer lock.
         // https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API
-        const canvas = renderer.domElement;
+        this.canvas = this.renderer.domElement;
 
         //TODO lage eigen klasse med lyttarar og slikt frå vinduet
 
-        canvas.addEventListener('click', () => {
-            canvas.requestPointerLock();
+        this.canvas.addEventListener('click', () => {
+            this.canvas.requestPointerLock();
         });
 
-        let yaw = 0;
-        let pitch = 0;
-        const mouseSensitivity = 0.001;
-
-        function updateCamRotation(event) {
-            yaw += event.movementX * mouseSensitivity;
-            pitch += event.movementY * mouseSensitivity;
-        }
+        this.yaw = 0;
+        this.pitch = 0;
+        this.mouseSensitivity = 0.001;
 
         //TODO lage eigen klasse med lyttarar og slikt frå vinduet
 
         document.addEventListener('pointerlockchange', () => {
-            if (document.pointerLockElement === canvas) {
-                canvas.addEventListener('mousemove', updateCamRotation, false);
+            if (document.pointerLockElement === this.canvas) {
+                this.canvas.addEventListener('mousemove', this.updateCamRotation.bind(this), false);
             } else {
-                canvas.removeEventListener('mousemove', updateCamRotation, false);
+                this.canvas.removeEventListener('mousemove', this.updateCamRotation.bind(this), false);
             }
         });
 
-        let move = {
+        this.move = {
             forward: false,
             backward: false,
             left: false,
             right: false,
-            speed: 0.01
+            speed: 20.0
         };
 
         //TODO lage eigen klasse med lyttarar og slikt frå vinduet
 
         window.addEventListener('keydown', (e) => {
             if (e.code === 'KeyW') {
-                move.forward = true;
+                this.move.forward = true;
                 e.preventDefault();
             } else if (e.code === 'KeyS') {
-                move.backward = true;
+                this.move.backward = true;
                 e.preventDefault();
             } else if (e.code === 'KeyA') {
-                move.left = true;
+                this.move.left = true;
                 e.preventDefault();
             } else if (e.code === 'KeyD') {
-                move.right = true;
+                this.move.right = true;
                 e.preventDefault();
             }
         });
@@ -226,30 +225,30 @@ export default class Spel {
 
         window.addEventListener('keyup', (e) => {
             if (e.code === 'KeyW') {
-                move.forward = false;
+                this.move.forward = false;
                 e.preventDefault();
             } else if (e.code === 'KeyS') {
-                move.backward = false;
+                this.move.backward = false;
                 e.preventDefault();
             } else if (e.code === 'KeyA') {
-                move.left = false;
+                this.move.left = false;
                 e.preventDefault();
             } else if (e.code === 'KeyD') {
-                move.right = false;
+                this.move.right = false;
                 e.preventDefault();
             }
         });
 
-        const velocity = new Vector3(0.0, 0.0, 0.0);
+        this.velocity = new Vector3(0.0, 0.0, 0.0);
 
         //TODO putte i eigen klasse som tar for seg "speleloopen"
 
         let then = performance.now();
         function loop(now) {
 
-            stats.begin();
-
             const delta = now - then;
+            //const delta = clock.getDelta();
+
             then = now;
 
             const moveSpeed = move.speed * delta;
@@ -272,6 +271,8 @@ export default class Spel {
                 velocity.z += moveSpeed;
             }
 
+            if (goldenGunMixer) goldenGunMixer.update(delta);
+
             // update controller rotation.
             mouseLookController.update(pitch, yaw);
             yaw = 0;
@@ -284,17 +285,72 @@ export default class Spel {
             //set posisjonen til kameraet litt over bakken
             camera.position.setY(terreng.terrengGeometri.getHeightAt(camera.position.x, camera.position.z) + 3);
 
-            // render scene:
-            renderer.render(scene, camera);
+            // render this.scene:
+            renderer.render(this.scene, camera);
 
-            stats.end();
+            stats.update();
 
             requestAnimationFrame(loop);
 
         };
 
-        loop(performance.now());
+        //loop(performance.now());
 
+
+    }
+
+    updateCamRotation(event) {
+        this.yaw += event.movementX * this.mouseSensitivity;
+        this.pitch += event.movementY * this.mouseSensitivity;
+    }
+
+    loop(now) {
+
+        //const delta = now - then;
+        const delta = this.clock.getDelta();
+
+        //then = now;
+
+        const moveSpeed = this.move.speed * delta;
+
+        this.velocity.set(0.0, 0.0, 0.0);
+
+        if (this.move.left) {
+            this.velocity.x -= moveSpeed;
+        }
+
+        if (this.move.right) {
+            this.velocity.x += moveSpeed;
+        }
+
+        if (this.move.forward) {
+            this.velocity.z -= moveSpeed;
+        }
+
+        if (this.move.backward) {
+            this.velocity.z += moveSpeed;
+        }
+
+        if (this.goldenGunMixer) this.goldenGunMixer.update(delta);
+
+        // update controller rotation.
+        this.mouseLookController.update(this.pitch, this.yaw);
+        this.yaw = 0;
+        this.pitch = 0;
+
+        // apply rotation to velocity vector, and translate moveNode with it.
+        this.velocity.applyQuaternion(this.camera.quaternion);
+        this.camera.position.add(this.velocity);
+
+        //set posisjonen til kameraet litt over bakken
+        this.camera.position.setY(this.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z) + 3);
+
+        // render this.scene:
+        this.renderer.render(this.scene, this.camera);
+
+        this.stats.update();
+
+        requestAnimationFrame(this.loop.bind(this));
 
     }
 

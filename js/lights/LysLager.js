@@ -19,8 +19,10 @@ export default class LysLager {
 
         //Set up shadow properties for the light
         //litt høg res på shadow texture... 8k ;)
-        retningslys.shadow.mapSize.width = 8192;
-        retningslys.shadow.mapSize.height = 8192;
+        //14 = 16k, 13 = 8k, 12 = 4k
+        let shadowRes = Math.pow(2, 14);
+        retningslys.shadow.mapSize.width = shadowRes;
+        retningslys.shadow.mapSize.height = shadowRes;
         retningslys.shadow.camera.near = 0.5;
         retningslys.shadow.camera.far = 800;
         //width av terreng/2 gir ca. ok?
@@ -30,7 +32,7 @@ export default class LysLager {
         retningslys.shadow.camera.bottom = -300;
 
         // Set direction
-        retningslys.target.position.set(0, 15, 0);
+        retningslys.target.position.set(0, 0, 0);
 
         return retningslys;
     }
