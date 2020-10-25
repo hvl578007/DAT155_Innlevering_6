@@ -8,7 +8,8 @@ import {
     Vector3, WebGLRenderer,
     BackSide,
     AnimationMixer,
-    Clock
+    Clock,
+    Raycaster
 } from './lib/three.module.js';
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
@@ -16,11 +17,8 @@ import { GLTFLoader } from './loaders/GLTFLoader.js';
 import ModellImport from './terrain/ModellImport.js';
 import Vatn from './terrain/Vatn.js';
 import Skydome from './skydome/Skydome.js';
-import { FirstPersonControls } from './controls/FirstPersonControls.js';
 import { PointerLockControls } from './controls/PointerLockControls.js';
 import GoldenGun from './models/GoldenGun.js';
-
-let goldenGunMixer;
 
 export default class Spel {
 
@@ -30,8 +28,9 @@ export default class Spel {
 
     constructor() {
 
-        //TODO putte slikt i eigen klasse?
-        //set opp scenen og renderer og diverse greier
+        /**
+         * Initialisering av scene, kamera, renderer og slikt
+         */
         this._scene = new Scene();
 
         const axesHelper = new AxesHelper(15);
@@ -47,7 +46,15 @@ export default class Spel {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = PCFSoftShadowMap;
 
-        //styring av kamera - henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
+        // --------------------------------------------------------------------------------------
+
+        /**
+         * Set opp kontrol / styring av kamera (mus + tastatur)
+         * 
+         * henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
+         * og brukt PointerLockControls frå threejs ekempler klassane (byggjer på Pointer Lock API-et)
+         * https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API
+         */
 
         let blocker = document.getElementById('blocker');
         let instructions = document.getElementById('instructions');
@@ -86,18 +93,16 @@ export default class Spel {
         this.velocity = new Vector3();
         this.direction = new Vector3();
 
+        //legg til kameraet i scenen, treng det for raycasting for hopp, og for å få fram ting som ligg under kameraet
         this._scene.add(Spel.controls.getObject());
-
 
         document.addEventListener('keydown', this.onKeyDown.bind(this), false);
         document.addEventListener('keyup', this.onKeyUp.bind(this), false);
 
-        /*
-        Spel.controls = new FirstPersonSpel.controls(this.camera, this.renderer.domElement);
-        Spel.controls.activeLook = false;
-        Spel.controls.movementSpeed = 10;
-        Spel.controls.lookSpeed = 0.05;
-        */
+        //lagar raycaster for å sjå om ein er oppå eit objekt
+        this.raycaster = new Raycaster(new Vector3(), new Vector3(0, -1, 0), 0, 10);
+
+        // --------------------------------------------------------------------------------------
 
         /**
          * Handle window resize:
@@ -128,22 +133,29 @@ export default class Spel {
         document.body.appendChild(this.stats.dom);
 
 
+        /**
+         * Lagar ei threejs klokke for å finne delta (tida mellom gammal og nåtid)
+         */
+
         this.clock = new Clock();
 
+        // --------------------------------------------------------------------------------------
+
         /**
-         * Add light
+         * Legg til lys i scenen
          */
 
         let lys = new LysLager();
+
+        //lagar retningsbasert lys
         const retningslys = lys.lagRetningslys();
 
         this._scene.add(retningslys);
-        //retningslys.target = camera;
         this._scene.add(retningslys.target);
 
         // --------------------------------------------------------------------------------------
 
-        //set startposisjonen til kameraet?
+        //set startposisjonen til kameraet
         this.camera.position.z = 70;
         this.camera.position.y = 55;
         this.camera.rotation.x -= Math.PI * 0.25;
@@ -151,7 +163,7 @@ export default class Spel {
         // --------------------------------------------------------------------------------------
 
         /**
-         * Add terrain:
+         * Lagar og legg til terreng i scenen
          *
          */
 
@@ -160,7 +172,6 @@ export default class Spel {
         this.terreng = new Terreng(heightMapImage);
 
         this._scene.add(this.terreng);
-
 
         // --------------------------------------------------------------------------------------
 
@@ -180,17 +191,9 @@ export default class Spel {
          * Legg til golden gun på kameraet / spelaren
          */
 
-
         //laster inn eit gltf-objekt (golden gun)
-        //modellImport.lastInnGoldenGun(this.camera, goldenGunMixer);
-
         this.loader = new GLTFLoader();
         this.goldengun = new GoldenGun(this.camera, this.loader);
-
-        //console.log(goldenGunMixer);
-
-        //legg til kamera i this._scenen slik at våpnet vil bli vist
-        //this._scene.add(this.camera);
 
         // --------------------------------------------------------------------------------------
 
@@ -231,40 +234,39 @@ export default class Spel {
 
     }
 
-    init() {
-
-    }
-
-    static updateCamRotation(event) {
-        this.yaw += event.movementX * this.mouseSensitivity;
-        this.pitch += event.movementY * this.mouseSensitivity;
-    }
-
+    /**
+     * Metoden som blir brukt for å rendre scenen
+     * TODO eigen klasse?
+     */
     loop() {
 
         requestAnimationFrame(this.loop.bind(this));
 
         const delta = this.clock.getDelta();
 
-
+        //TODO fiks dette her på eit eller anna vis...
         this.time += delta;
-        if (this.time > 10) this.time = 0;
+        if (this.time > 12.5) this.time = 0;
 
-        const moveSpeed = this.move.speed * delta;
-
-        this.velocity.set(0.0, 0.0, 0.0);
-
+        //oppdaterer tid-variabel i vass-shaderen for å få til bevegelse
         if (this.vatn.matShader) this.vatn.matShader.uniforms.time.value = this.time;
-        //console.log(this._matShader);
 
+        //animerer våpnet
+        //TODO fiks slik at det bare skjer ein gong
         if (this.goldengun.mixer) this.goldengun.mixer.update(delta);
 
+        //hogda ein er i terrenget
+        let terrengPosHogde = this.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z);
+
+        //styrer med kontroll av kameraet
+        //henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
         if (Spel.controls.isLocked === true) {
 
-            //raycaster.ray.origin.copy(Spel.controls.getObject().position);
-            //raycaster.ray.origin.y -= 10;
+            //TODO legg til objekter (i objects) ein kan hoppe på
+            this.raycaster.ray.origin.copy(Spel.controls.getObject().position);
+            this.raycaster.ray.origin.y -= 10;
 
-            //var intersections = raycaster.intersectObjects(objects);
+            //var intersections = this.raycaster.intersectObjects(objects);
 
             //var onObject = intersections.length > 0;
 
@@ -273,7 +275,7 @@ export default class Spel {
             this.velocity.x -= this.velocity.x * 10.0 * delta;
             this.velocity.z -= this.velocity.z * 10.0 * delta;
 
-            this.velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+            this.velocity.y -= 9.8 * 125.0 * delta; // 100.0 = mass
 
             this.direction.z = Number(this.move.forward) - Number(this.move.backward);
             this.direction.x = Number(this.move.right) - Number(this.move.left);
@@ -294,12 +296,13 @@ export default class Spel {
             Spel.controls.moveRight(- this.velocity.x * delta);
             Spel.controls.moveForward(- this.velocity.z * delta);
 
-            Spel.controls.getObject().position.y += (this.velocity.y * delta); // new behavior
+            Spel.controls.getObject().position.y += (this.velocity.y * delta / 5); // new behavior
 
-            if (Spel.controls.getObject().position.y < 10) {
+            //om ein er ved bakken igjen -> ingen fart i y-retning + 
+            if (Spel.controls.getObject().position.y <= terrengPosHogde + 3) {
 
                 this.velocity.y = 0;
-                Spel.controls.getObject().position.y = 10;
+                //Spel.controls.getObject().position.y = 3;
 
                 this.move.canJump = true;
 
@@ -307,8 +310,10 @@ export default class Spel {
 
         }
 
-        //set posisjonen til kameraet litt over bakken
-        Spel.controls.getObject().position.setY(this.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z) + 3);
+        if(this.move.canJump) {
+            //set posisjonen til kameraet litt over bakken
+            Spel.controls.getObject().position.setY(terrengPosHogde + 3);
+        }
 
         this.stats.update();
 
@@ -318,6 +323,10 @@ export default class Spel {
     }
 
     //TODO i eigen klasse eller noko?
+    /**
+     * Metode for å aktivere bevegelse
+     * @param {*} event 
+     */
     onKeyDown(event) {
 
         switch (event.keyCode) {
@@ -352,6 +361,10 @@ export default class Spel {
     }
 
     //TODO i eigen klasse eller noko?
+    /**
+     * Metode for å deaktivere bevegelse
+     * @param {*} event 
+     */
     onKeyUp(event) {
 
         switch (event.keyCode) {
