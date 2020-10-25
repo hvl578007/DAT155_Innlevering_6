@@ -266,11 +266,9 @@ export default class Spel {
             this.raycaster.ray.origin.copy(Spel.controls.getObject().position);
             this.raycaster.ray.origin.y -= 10;
 
-            //var intersections = this.raycaster.intersectObjects(objects);
+            //let intersections = this.raycaster.intersectObjects(objects);
 
-            //var onObject = intersections.length > 0;
-
-            //var delta = ( time - prevTime ) / 1000;
+            //let onObject = intersections.length > 0;
 
             this.velocity.x -= this.velocity.x * 10.0 * delta;
             this.velocity.z -= this.velocity.z * 10.0 * delta;
