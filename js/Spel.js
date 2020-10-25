@@ -16,13 +16,17 @@ import { GLTFLoader } from './loaders/GLTFLoader.js';
 import ModellImport from './terrain/ModellImport.js';
 import Vatn from './terrain/Vatn.js';
 import Skydome from './skydome/Skydome.js';
-import {FirstPersonControls} from './controls/FirstPersonControls.js';
-import {PointerLockControls} from './controls/PointerLockControls.js';
+import { FirstPersonControls } from './controls/FirstPersonControls.js';
+import { PointerLockControls } from './controls/PointerLockControls.js';
+import GoldenGun from './models/GoldenGun.js';
 
 let goldenGunMixer;
 
-
 export default class Spel {
+
+    //er statisk fordi ein eventlistener må ha tak i den
+    //TODO fiks (eigen klasse eller noko greier)
+    static controls;
 
     constructor() {
 
@@ -43,11 +47,57 @@ export default class Spel {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = PCFSoftShadowMap;
 
-        //this.controls = new PointerLockControls(this.camera, document.body);
-        this.controls = new FirstPersonControls(this.camera, this.renderer.domElement);
-        this.controls.activeLook = false;
-        this.controls.movementSpeed = 10;
-        this.controls.lookSpeed = 0.05;
+        //styring av kamera - henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
+
+        let blocker = document.getElementById('blocker');
+        let instructions = document.getElementById('instructions');
+
+        //object som har med kamera-styring og inputs
+        Spel.controls = new PointerLockControls(this.camera, document.body);
+
+        instructions.addEventListener('click', function () {
+
+            Spel.controls.lock();
+
+        }, false);
+
+        Spel.controls.addEventListener('lock', function () {
+
+            instructions.style.display = 'none';
+            blocker.style.display = 'none';
+
+        });
+
+        Spel.controls.addEventListener('unlock', function () {
+
+            blocker.style.display = 'block';
+            instructions.style.display = '';
+
+        });
+
+        this.move = {
+            forward: false,
+            backward: false,
+            left: false,
+            right: false,
+            canJump: false
+        };
+
+        this.velocity = new Vector3();
+        this.direction = new Vector3();
+
+        this._scene.add(Spel.controls.getObject());
+
+
+        document.addEventListener('keydown', this.onKeyDown.bind(this), false);
+        document.addEventListener('keyup', this.onKeyUp.bind(this), false);
+
+        /*
+        Spel.controls = new FirstPersonSpel.controls(this.camera, this.renderer.domElement);
+        Spel.controls.activeLook = false;
+        Spel.controls.movementSpeed = 10;
+        Spel.controls.lookSpeed = 0.05;
+        */
 
         /**
          * Handle window resize:
@@ -61,12 +111,12 @@ export default class Spel {
 
             this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-            this.controls.handleResize();
+            //Spel.controls.handleResize();
         }, false);
 
         /**
-         * Add canvas element to DOM.
-         */
+        * Add canvas element to DOM.
+        */
         document.body.appendChild(this.renderer.domElement);
 
         /**
@@ -76,7 +126,7 @@ export default class Spel {
         this.stats = new Stats();
         this.stats.showPanel(0);
         document.body.appendChild(this.stats.dom);
-        // --------------------------------------------------------------------------------------
+
 
         this.clock = new Clock();
 
@@ -132,14 +182,15 @@ export default class Spel {
 
 
         //laster inn eit gltf-objekt (golden gun)
-        modellImport.lastInnGoldenGun(this.camera, goldenGunMixer);
+        //modellImport.lastInnGoldenGun(this.camera, goldenGunMixer);
 
         this.loader = new GLTFLoader();
+        this.goldengun = new GoldenGun(this.camera, this.loader);
 
         //console.log(goldenGunMixer);
 
         //legg til kamera i this._scenen slik at våpnet vil bli vist
-        this._scene.add(this.camera);
+        //this._scene.add(this.camera);
 
         // --------------------------------------------------------------------------------------
 
@@ -173,148 +224,14 @@ export default class Spel {
 
         // --------------------------------------------------------------------------------------
 
-        /**
-         * Set up camera controller:
-         */
-
-        //TODO kamera som bedre passar med FPS
-
-        //this.mouseLookController = new MouseLookController(this.camera);
-
-        // We attach a click lister to the canvas-element so that we can request a pointer lock.
-        // https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API
+        //berre lagrar canvas som ein objekt-variabel
         this._canvas = this.renderer.domElement;
 
-        //TODO lage eigen klasse med lyttarar og slikt frå vinduet
-
-        /*
-        this._canvas.addEventListener('click', () => {
-            this._canvas.requestPointerLock();
-        });
-        */
-
-        //this.yaw = 0;
-        //this.pitch = 0;
-        //this.mouseSensitivity = 0.001;
-
-        //TODO lage eigen klasse med lyttarar og slikt frå vinduet
-        /*
-        document.addEventListener('pointerlockchange', () => {
-            if (document.pointerLockElement === this._canvas) {
-                this._canvas.addEventListener('mousemove', this.updateCamRotation, false);
-            } else {
-                this._canvas.removeEventListener('mousemove', this.updateCamRotation, false);
-            }
-        });
-        */
-        this.move = {
-            forward: false,
-            backward: false,
-            left: false,
-            right: false,
-            speed: 20.0
-        };
-
-        //TODO lage eigen klasse med lyttarar og slikt frå vinduet
-
-        /*
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'KeyW') {
-                this.move.forward = true;
-                e.preventDefault();
-            } else if (e.code === 'KeyS') {
-                this.move.backward = true;
-                e.preventDefault();
-            } else if (e.code === 'KeyA') {
-                this.move.left = true;
-                e.preventDefault();
-            } else if (e.code === 'KeyD') {
-                this.move.right = true;
-                e.preventDefault();
-            }
-        });
-        */
-
-        //TODO lage eigen klasse med lyttarar og slikt frå vinduet
-
-        /*
-        window.addEventListener('keyup', (e) => {
-            if (e.code === 'KeyW') {
-                this.move.forward = false;
-                e.preventDefault();
-            } else if (e.code === 'KeyS') {
-                this.move.backward = false;
-                e.preventDefault();
-            } else if (e.code === 'KeyA') {
-                this.move.left = false;
-                e.preventDefault();
-            } else if (e.code === 'KeyD') {
-                this.move.right = false;
-                e.preventDefault();
-            }
-        });
-        */
-
-        this.velocity = new Vector3(0.0, 0.0, 0.0);
-
-        //TODO putte i eigen klasse som tar for seg "speleloopen"
-
-        /*
-        let then = performance.now();
-        function loop(now) {
-
-            const delta = now - then;
-            //const delta = clock.getDelta();
-
-            then = now;
-
-            const moveSpeed = move.speed * delta;
-
-            velocity.set(0.0, 0.0, 0.0);
-
-            if (move.left) {
-                velocity.x -= moveSpeed;
-            }
-
-            if (move.right) {
-                velocity.x += moveSpeed;
-            }
-
-            if (move.forward) {
-                velocity.z -= moveSpeed;
-            }
-
-            if (move.backward) {
-                velocity.z += moveSpeed;
-            }
-
-            if (goldenGunMixer) goldenGunMixer.update(delta);
-
-            // update controller rotation.
-            mouseLookController.update(pitch, yaw);
-            yaw = 0;
-            pitch = 0;
-
-            // apply rotation to velocity vector, and translate moveNode with it.
-            velocity.applyQuaternion(camera.quaternion);
-            camera.position.add(velocity);
-
-            //set posisjonen til kameraet litt over bakken
-            camera.position.setY(terreng.terrengGeometri.getHeightAt(camera.position.x, camera.position.z) + 3);
-
-            // render this._scene:
-            renderer.render(this._scene, camera);
-
-            stats.update();
-
-            requestAnimationFrame(loop);
-
-        };
-
-        //loop(performance.now());
-        */
-
         this.time = 0;
+
+    }
+
+    init() {
 
     }
 
@@ -325,73 +242,150 @@ export default class Spel {
 
     loop() {
 
-        //const delta = now - then;
+        requestAnimationFrame(this.loop.bind(this));
+
         const delta = this.clock.getDelta();
+
 
         this.time += delta;
         if (this.time > 10) this.time = 0;
-
-        //then = now;
 
         const moveSpeed = this.move.speed * delta;
 
         this.velocity.set(0.0, 0.0, 0.0);
 
-        this.controls.update(delta);
-
         if (this.vatn.matShader) this.vatn.matShader.uniforms.time.value = this.time;
         //console.log(this._matShader);
-        /*
-        if (this.move.left) {
-            this.velocity.x -= moveSpeed;
+
+        if (this.goldengun.mixer) this.goldengun.mixer.update(delta);
+
+        if (Spel.controls.isLocked === true) {
+
+            //raycaster.ray.origin.copy(Spel.controls.getObject().position);
+            //raycaster.ray.origin.y -= 10;
+
+            //var intersections = raycaster.intersectObjects(objects);
+
+            //var onObject = intersections.length > 0;
+
+            //var delta = ( time - prevTime ) / 1000;
+
+            this.velocity.x -= this.velocity.x * 10.0 * delta;
+            this.velocity.z -= this.velocity.z * 10.0 * delta;
+
+            this.velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+            this.direction.z = Number(this.move.forward) - Number(this.move.backward);
+            this.direction.x = Number(this.move.right) - Number(this.move.left);
+            this.direction.normalize(); // this ensures consistent movements in all directions
+
+            if (this.move.forward || this.move.backward) this.velocity.z -= this.direction.z * 400.0 * delta;
+            if (this.move.left || this.move.right) this.velocity.x -= this.direction.x * 400.0 * delta;
+
+            /*
+            if (onObject === true) {
+
+                this.velocity.y = Math.max(0, this.velocity.y);
+                this.move.canJump = true;
+
+            }
+            */
+
+            Spel.controls.moveRight(- this.velocity.x * delta);
+            Spel.controls.moveForward(- this.velocity.z * delta);
+
+            Spel.controls.getObject().position.y += (this.velocity.y * delta); // new behavior
+
+            if (Spel.controls.getObject().position.y < 10) {
+
+                this.velocity.y = 0;
+                Spel.controls.getObject().position.y = 10;
+
+                this.move.canJump = true;
+
+            }
+
         }
-
-        if (this.move.right) {
-            this.velocity.x += moveSpeed;
-        }
-
-        if (this.move.forward) {
-            this.velocity.z -= moveSpeed;
-        }
-
-        if (this.move.backward) {
-            this.velocity.z += moveSpeed;
-        }
-        */
-
-        if (this.goldenGunMixer) this.goldenGunMixer.update(delta);
-
-        /*
-
-        // update controller rotation.
-        this.mouseLookController.update(this.pitch, this.yaw);
-        this.yaw = 0;
-        this.pitch = 0;
-
-        // apply rotation to velocity vector, and translate moveNode with it.
-        this.velocity.applyQuaternion(this.camera.quaternion);
-        this.camera.position.add(this.velocity);
-        */
 
         //set posisjonen til kameraet litt over bakken
-        this.camera.position.setY(this.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z) + 3);
+        Spel.controls.getObject().position.setY(this.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z) + 3);
+
+        this.stats.update();
 
         // render this._scene:
         this.renderer.render(this._scene, this.camera);
 
-        this.stats.update();
+    }
 
-        requestAnimationFrame(this.loop.bind(this));
+    //TODO i eigen klasse eller noko?
+    onKeyDown(event) {
+
+        switch (event.keyCode) {
+
+            case 38: // up
+            case 87: // w
+                this.move.forward = true;
+                break;
+
+            case 37: // left
+            case 65: // a
+                this.move.left = true;
+                break;
+
+            case 40: // down
+            case 83: // s
+                this.move.backward = true;
+                break;
+
+            case 39: // right
+            case 68: // d
+                this.move.right = true;
+                break;
+
+            case 32: // space
+                if (this.move.canJump === true) this.velocity.y += 350;
+                this.move.canJump = false;
+                break;
+
+        }
 
     }
 
-    //eller ha alt i konstruktør?
-    start() {
+    //TODO i eigen klasse eller noko?
+    onKeyUp(event) {
+
+        switch (event.keyCode) {
+
+            case 38: // up
+            case 87: // w
+                this.move.forward = false;
+                break;
+
+            case 37: // left
+            case 65: // a
+                this.move.left = false;
+                break;
+
+            case 40: // down
+            case 83: // s
+                this.move.backward = false;
+                break;
+
+            case 39: // right
+            case 68: // d
+                this.move.right = false;
+                break;
+
+        }
 
     }
 
     get scene() {
         return this._scene;
+    }
+
+    set scene(scene) {
+        this._scene = scene;
     }
 
     get canvas() {
