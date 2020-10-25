@@ -4,6 +4,8 @@ import { ShaderMaterial } from "../lib/three.module.js";
 
 export default class VassMateriale extends ShaderMaterial {
 
+    //blir ikkje brukt..
+
     constructor({
         map = null,
         opacity = 1.0

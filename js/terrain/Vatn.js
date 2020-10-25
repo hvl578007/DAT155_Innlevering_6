@@ -17,7 +17,7 @@ export default class Vatn extends Mesh {
         
         let vassMateriale = new MeshPhongMaterial({
             transparent: true,
-            opacity: 0.9,
+            opacity: 1.0,
             map: vassTekstur
         });
 
@@ -32,7 +32,7 @@ export default class Vatn extends Mesh {
             // https://stackoverflow.com/questions/9577868/glsl-calculate-surface-normal
             const customTransform = `
                 vec3 transformed = vec3(position);
-                float freq = 3.0;
+                float freq = 2.0;
                 float amp = 0.5;
                 float angle = (time + position.y)*freq;
                 transformed.z += sin(angle)*amp;
@@ -40,17 +40,13 @@ export default class Vatn extends Mesh {
                 vNormal = normalMatrix * objectNormal;
             `;
             shader.vertexShader = shader.vertexShader.replace(token,customTransform);
-            this.matShader = shader;
+            this._matShader = shader;
         };
-                
-        /*
-        let vassMateriale = new VassMateriale({
-            opacity: 0.9,
-            map: vassTekstur
-        });
-        */
 
         super(vassGeometri, vassMateriale);
+
+        this.receiveShadow = true;
+        //this.castShadow = true;
 
         this.rotation.x = -Math.PI / 2
 

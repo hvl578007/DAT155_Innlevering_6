@@ -19,6 +19,7 @@ export default class GoldenGun {
                     }
                 });
 
+                //lagrar animasjonar som er i modellen i ein mixer som ein bruke til å spele av i loop-metoden
                 this._mixer = new AnimationMixer(object.scene);
                 
                 object.animations.forEach((clip) => {this._mixer.clipAction(clip).play()});
