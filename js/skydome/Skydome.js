@@ -4,9 +4,9 @@ import { Mesh, MeshBasicMaterial, SphereGeometry, TextureLoader, ShaderMaterial 
 
 export default class Skydome extends Mesh {
 
-    constructor(){
+    constructor(scene){
 
-        let skydomeGeometry = new SphereGeometry(350,64,64);
+        let skydomeGeometry = new SphereGeometry(550,64,64);
         let skydomeMaterial = new MeshBasicMaterial({
             map: new TextureLoader().load('./resources/textures/sky.jpg')
         });
