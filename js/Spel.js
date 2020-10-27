@@ -9,7 +9,12 @@ import {
     BackSide,
     AnimationMixer,
     Clock,
-    Raycaster
+    Raycaster,
+    CubeCamera,
+    WebGLCubeRenderTarget,
+    RGBFormat,
+    LinearMipmapLinearFilter,
+    sRGBEncoding
 } from './lib/three.module.js';
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
@@ -19,6 +24,7 @@ import Vatn from './terrain/Vatn.js';
 import Skydome from './skydome/Skydome.js';
 import { PointerLockControls } from './controls/PointerLockControls.js';
 import GoldenGun from './models/GoldenGun.js';
+import Innsjo from './terrain/Innsjo.js';
 
 export default class Spel {
 
@@ -203,11 +209,42 @@ export default class Spel {
 
         //lagar eit nytt vatn som skal plasserast i terrenget
         this.vatn = new Vatn();
-        //flytter vatnet litt over 0
-        this.vatn.position.y = 1.2;
 
         //legg til vatnet i terrenget
         this.terreng.add(this.vatn);
+
+        /**
+         * TODO eigen klasse?
+         */
+        //lager cubecamera for å få til dynamisk cube mapping på vatnet:
+        //henta frå https://github.com/mrdoob/three.js/blob/master/examples/webgl_materials_cubemap_dynamic.html
+        
+        this.cubeRenderTarget1 = new WebGLCubeRenderTarget(128, {
+            format: RGBFormat,
+            generateMipmaps: true,
+            minFilter: LinearMipmapLinearFilter,
+            encoding: sRGBEncoding
+        });
+
+        this.cubeCamera1 = new CubeCamera(1, 1000, this.cubeRenderTarget1);
+
+        this.cubeRenderTarget2 = new WebGLCubeRenderTarget(128, {
+            format: RGBFormat,
+            generateMipmaps: true,
+            minFilter: LinearMipmapLinearFilter,
+            encoding: sRGBEncoding
+        });
+
+        this.cubeCamera2 = new CubeCamera(1, 1000, this.cubeRenderTarget2);
+
+        //this._scene.add(this.cubeCamera);
+
+        /**
+         * Legg til innsjø i terrenget
+         * 
+         */
+        this.innsjo = new Innsjo(this.cubeRenderTarget2.texture);
+        this.terreng.add(this.innsjo);
 
         // --------------------------------------------------------------------------------------
 
@@ -230,7 +267,9 @@ export default class Spel {
         //berre lagrar canvas som ein objekt-variabel
         this._canvas = this.renderer.domElement;
 
+        //TODO endre denne (Date.now() ???)
         this.time = 0;
+        this.count = 0;
 
     }
 
@@ -250,6 +289,7 @@ export default class Spel {
 
         //oppdaterer tid-variabel i vass-shaderen for å få til bevegelse
         if (this.vatn.matShader) this.vatn.matShader.uniforms.time.value = this.time;
+        if (this.innsjo.matShader) this.innsjo.matShader.uniforms.time.value = this.time;
 
         //animerer våpnet
         //TODO fiks slik at det bare skjer ein gong
@@ -308,10 +348,22 @@ export default class Spel {
 
         }
 
-        if(this.move.canJump) {
+        if (this.move.canJump) {
             //set posisjonen til kameraet litt over bakken
             Spel.controls.getObject().position.setY(terrengPosHogde + 3);
+        
         }
+
+        // pingpong
+        if (this.count % 2 === 0) {
+            this.cubeCamera1.update(this.renderer, this._scene);
+            this.innsjo.vassMateriale.envMap = this.cubeRenderTarget1.texture;
+        } else {
+            this.cubeCamera2.update(this.renderer, this._scene);
+            this.innsjo.vassMateriale.envMap = this.cubeRenderTarget2.texture;
+        }
+
+        this.count++;
 
         this.stats.update();
 
