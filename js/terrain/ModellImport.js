@@ -22,16 +22,16 @@ export default class ModellImport {
             // called when resource is loaded
             (object) => {
                 //område (x og z koordinatar, og distansen mellom dei = += talet)
-                for (let x = -50; x < 50; x += 16) {
-                    for (let z = -50; z < 50; z += 16) {
+                for (let x = -400; x < 400; x += 50) {
+                    for (let z = -400; z < 400; z += 50) {
 
                         //litt tilfeldig plassering rundt dei punkta
-                        const px = x + 1 + (6 * Math.random()) - 3;
-                        const pz = z + 1 + (6 * Math.random()) - 3;
+                        const px = x + 1 + (12 * Math.random()) - 3;
+                        const pz = z + 1 + (12 * Math.random()) - 3;
 
                         const height = terrengGeometri.getHeightAt(px, pz);
 
-                        if (height < 5) {
+                        if (height > 2 && height < 9) {
                             const tree = object.scene.children[0].clone();
 
                             tree.traverse((child) => {
