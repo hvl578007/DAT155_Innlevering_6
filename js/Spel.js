@@ -25,6 +25,8 @@ import Skydome from './skydome/Skydome.js';
 import { PointerLockControls } from './controls/PointerLockControls.js';
 import GoldenGun from './models/GoldenGun.js';
 import Innsjo from './terrain/Innsjo.js';
+import InnsjoCubeMap from './materials/InnsjoCubeMap.js';
+import Stein from './terrain/objects/Stein.js';
 
 export default class Spel {
 
@@ -106,7 +108,9 @@ export default class Spel {
         document.addEventListener('keyup', this.onKeyUp.bind(this), false);
 
         //lagar raycaster for å sjå om ein er oppå eit objekt
-        this.raycaster = new Raycaster(new Vector3(), new Vector3(0, -1, 0), 0, 10);
+        this.raycaster = new Raycaster(new Vector3(), new Vector3(0, -1, 0), 0, 3);
+        //lagar ein tabell som skal innehelde objekter som ein kan hoppe på
+        this.objekterHoppePaa = [];
 
         // --------------------------------------------------------------------------------------
 
@@ -214,38 +218,15 @@ export default class Spel {
         this.terreng.add(this.vatn);
 
         /**
-         * TODO eigen klasse?
+         * lager cubecamera for å få til dynamisk cube mapping på vatnet:
          */
-        //lager cubecamera for å få til dynamisk cube mapping på vatnet:
-        //henta frå https://github.com/mrdoob/three.js/blob/master/examples/webgl_materials_cubemap_dynamic.html
-        
-        this.cubeRenderTarget1 = new WebGLCubeRenderTarget(1024, {
-            anisotropy: 16
-        });
-
-        this.cubeCamera1 = new CubeCamera(0.1, 800, this.cubeRenderTarget1);
-        this.cubeCamera1.position.x = -30;
-        this.cubeCamera1.position.z = 170;
-        //TODO ka y-pos?
-        this.cubeCamera1.position.y = 1.5;
-
-        this.cubeRenderTarget2 = new WebGLCubeRenderTarget(1024, {
-            anisotropy: 16
-        });
-
-        this.cubeCamera2 = new CubeCamera(0.1, 800, this.cubeRenderTarget2);
-        this.cubeCamera2.position.x = -30;
-        this.cubeCamera2.position.z = 170;
-        //TODO ka y-pos?
-        this.cubeCamera2.position.y = 1.5;
-
-        //this._scene.add(this.cubeCamera);
+        this.innsjoCubeMap = new InnsjoCubeMap();
 
         /**
          * Legg til innsjø i terrenget
          * 
          */
-        this.innsjo = new Innsjo(this.cubeRenderTarget2.texture);
+        this.innsjo = new Innsjo(this.innsjoCubeMap.cubeRenderTarget2.texture);
         this.terreng.add(this.innsjo);
 
         // --------------------------------------------------------------------------------------
@@ -266,11 +247,26 @@ export default class Spel {
 
         // --------------------------------------------------------------------------------------
 
+        /**
+         * Lagar stein i terrenget (berre 1, utvide med fleire?)
+         */
+
+        this.stein = new Stein();
+
+        this.stein.position.x = -10;
+        this.stein.position.z = 50;
+        this.stein.position.y = -3;
+
+        this.objekterHoppePaa.push(this.stein);
+
+        this._scene.add(this.stein);
+
         //berre lagrar canvas som ein objekt-variabel
         this._canvas = this.renderer.domElement;
 
         //TODO endre denne (Date.now() ???)
         this.time = 0;
+        //for ping-pong av cube map
         this.count = 0;
 
     }
@@ -302,15 +298,18 @@ export default class Spel {
 
         //styrer med kontroll av kameraet
         //henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
+
         if (Spel.controls.isLocked === true) {
+            
+            let faller = this.velocity.y !== 0;
 
             //TODO legg til objekter (i objects) ein kan hoppe på
             this.raycaster.ray.origin.copy(Spel.controls.getObject().position);
             this.raycaster.ray.origin.y -= 10;
 
-            //let intersections = this.raycaster.intersectObjects(objects);
+            let intersections = this.raycaster.intersectObjects(this.objekterHoppePaa);
 
-            //let onObject = intersections.length > 0;
+            let onObject = intersections.length > 0;
 
             this.velocity.x -= this.velocity.x * 10.0 * delta;
             this.velocity.z -= this.velocity.z * 10.0 * delta;
@@ -324,14 +323,14 @@ export default class Spel {
             if (this.move.forward || this.move.backward) this.velocity.z -= this.direction.z * 400.0 * delta;
             if (this.move.left || this.move.right) this.velocity.x -= this.direction.x * 400.0 * delta;
 
-            /*
+            
             if (onObject === true) {
 
                 this.velocity.y = Math.max(0, this.velocity.y);
                 this.move.canJump = true;
 
             }
-            */
+            
 
             Spel.controls.moveRight(- this.velocity.x * delta);
             Spel.controls.moveForward(- this.velocity.z * delta);
@@ -343,26 +342,27 @@ export default class Spel {
 
                 this.velocity.y = 0;
                 //Spel.controls.getObject().position.y = 3;
-
                 this.move.canJump = true;
 
             }
 
-        }
+            let erOverBakken = Spel.controls.getObject().position.y > this.terrengPosHogde + 3;
 
-        if (this.move.canJump) {
-            //set posisjonen til kameraet litt over bakken
-            Spel.controls.getObject().position.setY(terrengPosHogde + 3);
-        
+            if (!faller && !erOverBakken && !onObject && this.move.canJump) {
+                //set posisjonen til kameraet litt over bakken
+                Spel.controls.getObject().position.setY(terrengPosHogde + 3);
+            
+            }
+
         }
 
         // pingpong
         if (this.count % 2 === 0) {
-            this.cubeCamera1.update(this.renderer, this._scene);
-            this.innsjo.vassMateriale.envMap = this.cubeRenderTarget1.texture;
+            this.innsjoCubeMap.cubeCamera1.update(this.renderer, this._scene);
+            this.innsjo.vassMateriale.envMap = this.innsjoCubeMap.cubeRenderTarget1.texture;
         } else {
-            this.cubeCamera2.update(this.renderer, this._scene);
-            this.innsjo.vassMateriale.envMap = this.cubeRenderTarget2.texture;
+            this.innsjoCubeMap.cubeCamera2.update(this.renderer, this._scene);
+            this.innsjo.vassMateriale.envMap = this.innsjoCubeMap.cubeRenderTarget2.texture;
         }
 
         this.count++;
