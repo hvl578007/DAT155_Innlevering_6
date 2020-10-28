@@ -14,7 +14,10 @@ import {
     WebGLCubeRenderTarget,
     RGBFormat,
     LinearMipmapLinearFilter,
-    sRGBEncoding
+    sRGBEncoding,
+    Fog,
+    FogExp2,
+    TextureLoader
 } from './lib/three.module.js';
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
@@ -53,6 +56,11 @@ export default class Spel {
 
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = PCFSoftShadowMap;
+
+        // legg til tåke / fog på scenen:
+        //TODO fiks farge og skydome?
+        //this._scene.background = new TextureLoader().load('./resources/textures/Sky.jpg');
+        this._scene.fog = new FogExp2(0x2980B9, 0.005);
 
         // --------------------------------------------------------------------------------------
 
@@ -239,7 +247,7 @@ export default class Spel {
         //lager og legger til skydome
         let skyDome = new Skydome();
         //endrer slik at skydomen rendres innenfra
-        skyDome.material.side = BackSide;
+        //skyDome.material.side = BackSide; //<-- flytta denne inn i klassen heller
         //skyDome.position.y = 5000; //<- denne setninga flytter skydome veldig høgt opp = kan ikkje sjå den lengre
 
         //legger til skydome i this._scenen
@@ -300,9 +308,7 @@ export default class Spel {
         //henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
 
         if (Spel.controls.isLocked === true) {
-            
-            let faller = this.velocity.y !== 0;
-
+        
             //TODO legg til objekter (i objects) ein kan hoppe på
             this.raycaster.ray.origin.copy(Spel.controls.getObject().position);
             this.raycaster.ray.origin.y -= 10;
@@ -346,7 +352,9 @@ export default class Spel {
 
             }
 
-            let erOverBakken = Spel.controls.getObject().position.y > this.terrengPosHogde + 3;
+            let erOverBakken = Spel.controls.getObject().position.y > terrengPosHogde + 3;
+
+            let faller = this.velocity.y !== 0;
 
             if (!faller && !erOverBakken && !onObject && this.move.canJump) {
                 //set posisjonen til kameraet litt over bakken
