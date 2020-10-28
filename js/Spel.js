@@ -219,23 +219,25 @@ export default class Spel {
         //lager cubecamera for å få til dynamisk cube mapping på vatnet:
         //henta frå https://github.com/mrdoob/three.js/blob/master/examples/webgl_materials_cubemap_dynamic.html
         
-        this.cubeRenderTarget1 = new WebGLCubeRenderTarget(128, {
-            format: RGBFormat,
-            generateMipmaps: true,
-            minFilter: LinearMipmapLinearFilter,
-            encoding: sRGBEncoding
+        this.cubeRenderTarget1 = new WebGLCubeRenderTarget(1024, {
+            anisotropy: 16
         });
 
-        this.cubeCamera1 = new CubeCamera(1, 1000, this.cubeRenderTarget1);
+        this.cubeCamera1 = new CubeCamera(0.1, 800, this.cubeRenderTarget1);
+        this.cubeCamera1.position.x = -30;
+        this.cubeCamera1.position.z = 170;
+        //TODO ka y-pos?
+        this.cubeCamera1.position.y = 1.5;
 
-        this.cubeRenderTarget2 = new WebGLCubeRenderTarget(128, {
-            format: RGBFormat,
-            generateMipmaps: true,
-            minFilter: LinearMipmapLinearFilter,
-            encoding: sRGBEncoding
+        this.cubeRenderTarget2 = new WebGLCubeRenderTarget(1024, {
+            anisotropy: 16
         });
 
-        this.cubeCamera2 = new CubeCamera(1, 1000, this.cubeRenderTarget2);
+        this.cubeCamera2 = new CubeCamera(0.1, 800, this.cubeRenderTarget2);
+        this.cubeCamera2.position.x = -30;
+        this.cubeCamera2.position.z = 170;
+        //TODO ka y-pos?
+        this.cubeCamera2.position.y = 1.5;
 
         //this._scene.add(this.cubeCamera);
 

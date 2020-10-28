@@ -15,10 +15,11 @@ export default class Innsjo extends Mesh {
 
         //lagar geometri 100x100
         //TODO lek litt med inndelingar for å få det "betre"..
-        let vassGeometri = new PlaneBufferGeometry(100, 100, 100, 100);
+        let vassGeometri = new PlaneBufferGeometry(75, 75, 100, 100);
         //vassGeometri.rotateX(-Math.PI / 2);
 
         //lagar materiale som responderer til lyset
+        
         
         let vassMateriale = new MeshPhongMaterial({
             transparent: true,
@@ -30,13 +31,14 @@ export default class Innsjo extends Mesh {
         
 
         /*
-        let vassMateriale = new MeshStandardMaterial({
+        let vassMateriale = new MeshBasicMaterial({
             envMap: envMapParam,
             combine: MultiplyOperation,
             reflectivity: 1
         });
         */
 
+        
         //endrer materialshaderen før den skal kompilere
         //henta kode og slikt frå https://medium.com/@joshmarinacci/water-ripples-with-vertex-shaders-6a9ecbdf091f
         vassMateriale.onBeforeCompile = (shader) => {
@@ -66,6 +68,7 @@ export default class Innsjo extends Mesh {
             //lagrar shaderen for å kunne oppdatere/sende ny uniform til shaderen når ein rendrer
             this._matShader = shader;
         };
+        
 
         super(vassGeometri, vassMateriale);
 
@@ -75,8 +78,8 @@ export default class Innsjo extends Mesh {
         //this.castShadow = true;
 
         this.rotation.x = -Math.PI / 2;
-        this.position.x = -20;
-        this.position.z = 185;
+        this.position.x = -30;
+        this.position.z = 170;
         //flytter vatnet litt over 0
         this.position.y = 1.9;
     }
