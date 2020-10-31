@@ -264,6 +264,7 @@ export default class Spel {
         this.stein.position.x = -10;
         this.stein.position.z = 50;
         this.stein.position.y = -3;
+        this.stein.rotation.x = (Math.PI/2);
 
         this.objekterHoppePaa.push(this.stein);
 
@@ -365,6 +366,7 @@ export default class Spel {
         }
 
         // pingpong
+        this.innsjo.hidden = true;
         if (this.count % 2 === 0) {
             this.innsjoCubeMap.cubeCamera1.update(this.renderer, this._scene);
             this.innsjo.vassMateriale.envMap = this.innsjoCubeMap.cubeRenderTarget1.texture;
@@ -372,6 +374,7 @@ export default class Spel {
             this.innsjoCubeMap.cubeCamera2.update(this.renderer, this._scene);
             this.innsjo.vassMateriale.envMap = this.innsjoCubeMap.cubeRenderTarget2.texture;
         }
+        this.innsjo.hidden = false;
 
         this.count++;
 
