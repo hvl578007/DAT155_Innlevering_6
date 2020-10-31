@@ -12,7 +12,7 @@ export default class Stein extends Mesh {
         let steinTexture = new TextureLoader().load('./resources/textures/rock/Rock_039_baseColor.jpg');
         let steinAmbientOcclusion = new TextureLoader().load('./resources/textures/rock/Rock_039_ambientOcclusion.jpg');
 
-        let steinGeometri = new BoxBufferGeometry(10, 10, 10, 64, 64, 64);
+        let steinGeometri = new SphereBufferGeometry(7, 64, 64);
 
         let steinMateriale = new MeshStandardMaterial({
             aoMap: steinAmbientOcclusion,
