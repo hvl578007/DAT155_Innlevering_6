@@ -17,7 +17,8 @@ import {
     sRGBEncoding,
     Fog,
     FogExp2,
-    TextureLoader
+    TextureLoader,
+    Vector2
 } from './lib/three.module.js';
 import LysLager from './lights/LysLager.js';
 import Terreng from './terrain/Terreng.js';
@@ -30,6 +31,7 @@ import GoldenGun from './models/GoldenGun.js';
 import Innsjo from './terrain/Innsjo.js';
 import InnsjoCubeMap from './materials/InnsjoCubeMap.js';
 import Stein from './terrain/objects/Stein.js';
+import Verden from './Verden.js';
 
 export default class Spel {
 
@@ -108,6 +110,7 @@ export default class Spel {
 
         this.velocity = new Vector3();
         this.direction = new Vector3();
+        //this.leanVelocity = new Vector2();
 
         //legg til kameraet i scenen, treng det for raycasting for hopp, og for å få fram ting som ligg under kameraet
         this._scene.add(Spel.controls.getObject());
@@ -119,6 +122,13 @@ export default class Spel {
         this.raycaster = new Raycaster(new Vector3(), new Vector3(0, -1, 0), 0, 3);
         //lagar ein tabell som skal innehelde objekter som ein kan hoppe på
         this.objekterHoppePaa = [];
+
+        // --------------------------------------------------------------------------------------
+
+        //set startposisjonen til kameraet
+        this.camera.position.z = 70;
+        this.camera.position.y = 55;
+        this.camera.rotation.x -= Math.PI * 0.25;
 
         // --------------------------------------------------------------------------------------
 
@@ -159,116 +169,11 @@ export default class Spel {
 
         // --------------------------------------------------------------------------------------
 
-        /**
-         * Legg til lys i scenen
-         */
+        //TODO lage spelar-klasse? (kontroll av kamera og slikt)
 
-        let lys = new LysLager();
+        //set opp verdenen
+        this.verden = new Verden(this._scene, this.camera, this.objekterHoppePaa);
 
-        //lagar retningsbasert lys
-        const retningslys = lys.lagRetningslys();
-
-        this._scene.add(retningslys);
-        this._scene.add(retningslys.target);
-
-        // --------------------------------------------------------------------------------------
-
-        //set startposisjonen til kameraet
-        this.camera.position.z = 70;
-        this.camera.position.y = 55;
-        this.camera.rotation.x -= Math.PI * 0.25;
-
-        // --------------------------------------------------------------------------------------
-
-        /**
-         * Lagar og legg til terreng i scenen
-         *
-         */
-
-        let heightMapImage = document.getElementById("heightMap");
-
-        this.terreng = new Terreng(heightMapImage);
-
-        this._scene.add(this.terreng);
-
-        // --------------------------------------------------------------------------------------
-
-        /**
-         * Add trees
-         * TODO bruk støy (gaussisk / normalfordeling) til å meir "naturleg plassere trer" + må ikkje plassere dei i vatnet ;)
-         *
-         */
-
-        let modellImport = new ModellImport();
-        //plasserer rundt trer i this._scenen (burde bruke terrenget heller)
-        modellImport.plasserTrer(this.terreng.terrengGeometri, this._scene);
-
-        // --------------------------------------------------------------------------------------
-
-        /**
-         * Legg til golden gun på kameraet / spelaren
-         */
-
-        //laster inn eit gltf-objekt (golden gun)
-        this.loader = new GLTFLoader();
-        this.goldengun = new GoldenGun(this.camera, this.loader);
-
-        // --------------------------------------------------------------------------------------
-
-        /**
-         * Legg til vatn i terrenget
-         */
-
-        //lagar eit nytt vatn som skal plasserast i terrenget
-        this.vatn = new Vatn();
-
-        //legg til vatnet i terrenget
-        this.terreng.add(this.vatn);
-
-        /**
-         * lager cubecamera for å få til dynamisk cube mapping på vatnet:
-         */
-        this.innsjoCubeMap = new InnsjoCubeMap();
-
-        /**
-         * Legg til innsjø i terrenget
-         * 
-         */
-        this.innsjo = new Innsjo(this.innsjoCubeMap.cubeRenderTarget2.texture);
-        this.terreng.add(this.innsjo);
-
-        // --------------------------------------------------------------------------------------
-
-        /**
-         * Legg til skydome i this._scenen
-         */
-
-        //alt kjører bra, men kan ikke se skydomen?? skal være grå farget men alt er hvitt i skyene.
-        //lager og legger til skydome
-        let skyDome = new Skydome();
-        //endrer slik at skydomen rendres innenfra
-        //skyDome.material.side = BackSide; //<-- flytta denne inn i klassen heller
-        //skyDome.position.y = 5000; //<- denne setninga flytter skydome veldig høgt opp = kan ikkje sjå den lengre
-
-        //legger til skydome i this._scenen
-        this._scene.add(skyDome);
-
-        // --------------------------------------------------------------------------------------
-
-        /**
-         * Lagar stein i terrenget (berre 1, utvide med fleire?)
-         */
-
-        this.stein = new Stein();
-
-        this.stein.position.x = -10;
-        this.stein.position.z = 50;
-        this.stein.position.y = -3;
-        this.stein.rotation.x = (Math.PI/2);
-
-        this.objekterHoppePaa.push(this.stein);
-
-        this._scene.add(this.stein);
 
         //berre lagrar canvas som ein objekt-variabel
         this._canvas = this.renderer.domElement;
@@ -292,18 +197,18 @@ export default class Spel {
 
         //TODO fiks dette her på eit eller anna vis...
         this.time += delta;
-        if (this.time > 12.5) this.time = 0;
+        //if (this.time > 12.5) this.time = 0;
 
         //oppdaterer tid-variabel i vass-shaderen for å få til bevegelse
-        if (this.vatn.matShader) this.vatn.matShader.uniforms.time.value = this.time;
-        if (this.innsjo.matShader) this.innsjo.matShader.uniforms.time.value = this.time;
+        if (this.verden.vatn.matShader) this.verden.vatn.matShader.uniforms.time.value = this.time;
+        if (this.verden.innsjo.matShader) this.verden.innsjo.matShader.uniforms.time.value = this.time;
 
         //animerer våpnet
         //TODO fiks slik at det bare skjer ein gong
-        if (this.goldengun.mixer) this.goldengun.mixer.update(delta);
+        if (this.verden.goldengun.mixer) this.verden.goldengun.mixer.update(delta);
 
         //hogda ein er i terrenget
-        let terrengPosHogde = this.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z);
+        let terrengPosHogde = this.verden.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z);
 
         //styrer med kontroll av kameraet
         //henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
@@ -312,7 +217,7 @@ export default class Spel {
         
             //TODO legg til objekter (i objects) ein kan hoppe på
             this.raycaster.ray.origin.copy(Spel.controls.getObject().position);
-            this.raycaster.ray.origin.y -= 10;
+            this.raycaster.ray.origin.y -= 3;
 
             let intersections = this.raycaster.intersectObjects(this.objekterHoppePaa);
 
@@ -323,13 +228,27 @@ export default class Spel {
 
             this.velocity.y -= 9.8 * 125.0 * delta; // 100.0 = mass
 
+            //this.leanVelocity.x -= this.leanVelocity.x * 10.0 * delta;
+            //this.leanVelocity.y -= this.leanVelocity.y * 10.0 * delta;
+
+            //positiv om ein går framover, negativt elles
             this.direction.z = Number(this.move.forward) - Number(this.move.backward);
+            //positiv om ein går mot høgre, negativt elles
             this.direction.x = Number(this.move.right) - Number(this.move.left);
             this.direction.normalize(); // this ensures consistent movements in all directions
 
-            if (this.move.forward || this.move.backward) this.velocity.z -= this.direction.z * 400.0 * delta;
-            if (this.move.left || this.move.right) this.velocity.x -= this.direction.x * 400.0 * delta;
+            //head bobbing:
+            //får verdi frå -1 til 1
+            //fungerer ikkje, må ha disconnect mellom kamera og bevegelse då tipper eg...
+            //kanskje om eg brukte velocity?
+            //let headBob = Math.sin(this.time)/2;
 
+            if (this.move.forward || this.move.backward) {
+                this.velocity.z -= this.direction.z * 400.0 * delta;
+            }
+            if (this.move.left || this.move.right) {
+                this.velocity.x -= this.direction.x * 400.0 * delta;
+            }
             
             if (onObject === true) {
 
@@ -365,19 +284,21 @@ export default class Spel {
 
         }
 
+        //oppdatering av cube map / env map
         // pingpong
-        this.innsjo.hidden = true;
+        this.verden.innsjo.hidden = true;
         if (this.count % 2 === 0) {
-            this.innsjoCubeMap.cubeCamera1.update(this.renderer, this._scene);
-            this.innsjo.vassMateriale.envMap = this.innsjoCubeMap.cubeRenderTarget1.texture;
+            this.verden.innsjoCubeMap.cubeCamera1.update(this.renderer, this._scene);
+            this.verden.innsjo.vassMateriale.envMap = this.verden.innsjoCubeMap.cubeRenderTarget1.texture;
         } else {
-            this.innsjoCubeMap.cubeCamera2.update(this.renderer, this._scene);
-            this.innsjo.vassMateriale.envMap = this.innsjoCubeMap.cubeRenderTarget2.texture;
+            this.verden.innsjoCubeMap.cubeCamera2.update(this.renderer, this._scene);
+            this.verden.innsjo.vassMateriale.envMap = this.verden.innsjoCubeMap.cubeRenderTarget2.texture;
         }
-        this.innsjo.hidden = false;
+        this.verden.innsjo.hidden = false;
 
         this.count++;
 
+        //oppdaterer fps-stats
         this.stats.update();
 
         // render this._scene:
