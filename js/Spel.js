@@ -5,10 +5,13 @@ import Stats from './lib/Stats.js';
 import {
     AxesHelper,
     Clock,
-    FogExp2, PCFSoftShadowMap, PerspectiveCamera,
+    FogExp2, Mesh, MeshBasicMaterial, OrthographicCamera, PCFSoftShadowMap, PerspectiveCamera,
+    PlaneGeometry,
     Raycaster, Scene,
+    Texture,
     Vector3, WebGLRenderer
 } from './lib/three.module.js';
+import HUD from './ui/HUD.js';
 import Verden from './Verden.js';
 
 export default class Spel {
@@ -32,6 +35,7 @@ export default class Spel {
 
         this.renderer = new WebGLRenderer({ antialias: true });
         this.renderer.setClearColor(0xffffff);
+        this.renderer.autoClear = false;
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         this.renderer.shadowMap.enabled = true;
@@ -122,6 +126,9 @@ export default class Spel {
 
             this.renderer.setSize(window.innerWidth, window.innerHeight);
 
+            //TODO oppdater HUD kamera
+            //this.hud.cameraHUD.
+
             //Spel.controls.handleResize();
         }, false);
 
@@ -154,6 +161,12 @@ export default class Spel {
 
         // --------------------------------------------------------------------------------------
 
+        /**
+         * Lagar HUD:
+         */
+
+        this.hud = new HUD(window.innerHeight, window.innerWidth);
+
         //berre lagrar canvas som ein objekt-variabel
         this._canvas = this.renderer.domElement;
 
@@ -169,8 +182,6 @@ export default class Spel {
      * TODO eigen klasse?
      */
     loop() {
-
-        requestAnimationFrame(this.loop.bind(this));
 
         const delta = this.clock.getDelta();
 
@@ -265,6 +276,7 @@ export default class Spel {
 
         //oppdatering av cube map / env map
         // pingpong
+        this.renderer.autoClear = true;
         this.verden.innsjo.hidden = true;
         if (this.count % 2 === 0) {
             this.verden.innsjoCubeMap.cubeCamera1.update(this.renderer, this._scene);
@@ -274,14 +286,24 @@ export default class Spel {
             this.verden.innsjo.vassMateriale.envMap = this.verden.innsjoCubeMap.cubeRenderTarget2.texture;
         }
         this.verden.innsjo.hidden = false;
+        this.renderer.autoClear = false;
 
         this.count++;
 
         //oppdaterer fps-stats
         this.stats.update();
 
+        //oppdater hud:
+        this.hud.bitmap.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        this.hud.bitmap.fillText("x: " + Math.round(Spel.controls.getObject().position.x) + " y: " + Math.round(Spel.controls.getObject().position.y) + " z: " + Math.round(Spel.controls.getObject().position.z), window.innerWidth-175, 75);
+        this.hud.tekstur.needsUpdate = true;
+
         // render this._scene:
         this.renderer.render(this._scene, this.camera);
+        this.renderer.render(this.hud.scene, this.hud.kamera);
+
+        requestAnimationFrame(this.loop.bind(this));
+
 
     }
 
