@@ -48,7 +48,7 @@ export default class Vatn extends Mesh {
 
         //lagar geometri 600x600
         //TODO lek litt med inndelingar for å få det "betre"..
-        let vassGeometri = new PlaneBufferGeometry(600, 420, 600, 420);
+        let vassGeometri = new PlaneBufferGeometry(600, 420, 1800, 1260);
         //vassGeometri.rotateX(-Math.PI / 2);
 
         /*
