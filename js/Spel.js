@@ -1,36 +1,14 @@
 "use strict";
 
-import MouseLookController from './controls/MouseLookController.js';
+import { PointerLockControls } from './controls/PointerLockControls.js';
 import Stats from './lib/Stats.js';
 import {
-    AxesHelper, PCFSoftShadowMap, PerspectiveCamera,
-    Scene,
-    Vector3, WebGLRenderer,
-    BackSide,
-    AnimationMixer,
+    AxesHelper,
     Clock,
-    Raycaster,
-    CubeCamera,
-    WebGLCubeRenderTarget,
-    RGBFormat,
-    LinearMipmapLinearFilter,
-    sRGBEncoding,
-    Fog,
-    FogExp2,
-    TextureLoader,
-    Vector2
+    FogExp2, PCFSoftShadowMap, PerspectiveCamera,
+    Raycaster, Scene,
+    Vector3, WebGLRenderer
 } from './lib/three.module.js';
-import LysLager from './lights/LysLager.js';
-import Terreng from './terrain/Terreng.js';
-import { GLTFLoader } from './loaders/GLTFLoader.js';
-import ModellImport from './terrain/ModellImport.js';
-import Vatn from './terrain/Vatn.js';
-import Skydome from './skydome/Skydome.js';
-import { PointerLockControls } from './controls/PointerLockControls.js';
-import GoldenGun from './models/GoldenGun.js';
-import Innsjo from './terrain/Innsjo.js';
-import InnsjoCubeMap from './materials/InnsjoCubeMap.js';
-import Stein from './terrain/objects/Stein.js';
 import Verden from './Verden.js';
 
 export default class Spel {
@@ -174,6 +152,7 @@ export default class Spel {
         //set opp verdenen
         this.verden = new Verden(this._scene, this.camera, this.objekterHoppePaa);
 
+        // --------------------------------------------------------------------------------------
 
         //berre lagrar canvas som ein objekt-variabel
         this._canvas = this.renderer.domElement;
@@ -214,7 +193,7 @@ export default class Spel {
         //henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
 
         if (Spel.controls.isLocked === true) {
-        
+
             //TODO legg til objekter (i objects) ein kan hoppe på
             this.raycaster.ray.origin.copy(Spel.controls.getObject().position);
             this.raycaster.ray.origin.y -= 3;
@@ -249,14 +228,14 @@ export default class Spel {
             if (this.move.left || this.move.right) {
                 this.velocity.x -= this.direction.x * 400.0 * delta;
             }
-            
+
             if (onObject === true) {
 
                 this.velocity.y = Math.max(0, this.velocity.y);
                 this.move.canJump = true;
 
             }
-            
+
 
             Spel.controls.moveRight(- this.velocity.x * delta);
             Spel.controls.moveForward(- this.velocity.z * delta);
@@ -279,7 +258,7 @@ export default class Spel {
             if (!faller && !erOverBakken && !onObject && this.move.canJump) {
                 //set posisjonen til kameraet litt over bakken
                 Spel.controls.getObject().position.setY(terrengPosHogde + 3);
-            
+
             }
 
         }

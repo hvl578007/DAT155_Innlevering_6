@@ -21,7 +21,7 @@ export default class Verden {
      * 
      * @param {*} scene 
      * @param {*} kamera 
-     * @param {*} objekterHoppePaa 
+     * @param {*} objekterHoppePaa tabell med objekter ein kan hoppe oppå
      */
     constructor(scene, kamera, objekterHoppePaa) {
 
