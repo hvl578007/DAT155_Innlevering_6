@@ -9,10 +9,10 @@ export default class HUD {
         //henta kode frå https://www.evermade.fi/story/pure-three-js-hud/
         // og https://codepen.io/jaamo/pen/MaOGZV 
 
-        //let hudCanvas = new OffscreenCanvas(breidde, hoegde);
-        let hudCanvas = document.createElement('canvas');
-        hudCanvas.height = hoegde;
-        hudCanvas.width = breidde;
+        let hudCanvas = new OffscreenCanvas(breidde, hoegde);
+        //let hudCanvas = document.createElement('canvas');
+        //hudCanvas.height = hoegde;
+        //hudCanvas.width = breidde;
         this._hudBitmap = hudCanvas.getContext('2d');
 
         this._hudBitmap.font = "Normal 40px Arial";
