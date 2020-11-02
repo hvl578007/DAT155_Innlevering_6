@@ -128,7 +128,7 @@ export default class Verden {
         objekterHoppePaa.push(this.stein);
 
         scene.add(this.stein);
-6
+
         // --------------------------------------------------------------------------------------
 
     }
