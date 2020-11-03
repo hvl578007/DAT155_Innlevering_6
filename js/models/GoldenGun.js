@@ -8,10 +8,10 @@ export default class GoldenGun {
         gltfloader.load(
             './resources/models/james_bond_golden_gun/scene.gltf',
             (object) => {
-                //henter ut objektet (usikker på kvifor akkuratt dette)
+                //henter ut objektet
                 const gun = object.scene.children[0];
 
-                //usikker, men vil lage skygge og få skygge?
+                //vil lage skygge og få skygge
                 gun.traverse((child) => {
                     if (child.isMesh) {
                         child.castShadow = true;
