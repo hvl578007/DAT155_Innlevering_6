@@ -39,6 +39,7 @@ export default class HUD {
         //henter inn bilder
         this.goldengunHUDImg = document.getElementById('goldengunHUD');
         this.lommelyktHUDImg = document.getElementById("lommelyktHUD");
+        this.ammoHUDImg = document.getElementById('ammoHUD');
 
         //teikner statiske ting
         this._hudBitmap.drawImage(this.goldengunHUDImg, 50, 150, 100, 61);
@@ -47,6 +48,7 @@ export default class HUD {
         this._hudBitmap.drawImage(this.lommelyktHUDImg, 70, 350, 80, 80);
         this._hudBitmap.fillText("2 - Lommelykt", 40, 475);
         this._hudBitmap.strokeText("2 - Lommelykt", 40, 475);
+        
     }
 
     oppdaterKameraNyeDimensjonar(breidde, hoegde) {
@@ -62,7 +64,9 @@ export default class HUD {
         this._hudBitmap.clearRect(breidde/2, 0, breidde, hoegde/2);
         this._hudBitmap.fillText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
         this._hudBitmap.strokeText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
-
+        this._hudBitmap.clearRect(0, hoegde/2, breidde/2, hoegde);
+        this._hudBitmap.drawImage(this.ammoHUDImg, 50, hoegde-150, 100, 100);
+        this._hudBitmap.fillText("Ammo: 12", 175, hoegde-100);
         this._hudTekstur.needsUpdate = true;
     }
 
