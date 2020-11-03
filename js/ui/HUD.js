@@ -15,10 +15,11 @@ export default class HUD {
         //hudCanvas.width = breidde;
         this._hudBitmap = hudCanvas.getContext('2d');
 
-        this._hudBitmap.font = "Normal 40px Arial";
-        this._hudBitmap.textAlign = 'center';
-        this._hudBitmap.fillStyle = "rgba(245,10,10,0.75";
-        this._hudBitmap.fillText('Initializing...', breidde/2, hoegde/2);
+        this._hudBitmap.font = "Normal 36px Arial";
+        this._hudBitmap.textAlign = 'start';
+        this._hudBitmap.fillStyle = 'white';
+        this._hudBitmap.strokeStyle = 'black';
+        //this._hudBitmap.fillText('Initializing...', breidde/2, hoegde/2);
 
         this._kameraHUD = new OrthographicCamera(-breidde/2, breidde/2, hoegde/2, -hoegde/2, 0, 30);
 
@@ -34,6 +35,35 @@ export default class HUD {
         let planGeometri = new PlaneGeometry(breidde, hoegde);
         let plan = new Mesh(planGeometri, materiale);
         this._sceneHUD.add(plan);
+
+        //henter inn bilder
+        this.goldengunHUDImg = document.getElementById('goldengunHUD');
+        this.lommelyktHUDImg = document.getElementById("lommelyktHUD");
+
+        //teikner statiske ting
+        this._hudBitmap.drawImage(this.goldengunHUDImg, 50, 150, 100, 61);
+        this._hudBitmap.fillText("1 - GGun", 40, 250);
+        this._hudBitmap.strokeText("1 - GGun", 40, 250);
+        this._hudBitmap.drawImage(this.lommelyktHUDImg, 70, 350, 80, 80);
+        this._hudBitmap.fillText("2 - Lommelykt", 40, 475);
+        this._hudBitmap.strokeText("2 - Lommelykt", 40, 475);
+    }
+
+    oppdaterKameraNyeDimensjonar(breidde, hoegde) {
+        this._kameraHUD.left = -breidde/2;
+        this._kameraHUD.right = breidde/2;
+        this._kameraHUD.top = hoegde/2;
+        this._kameraHUD.bottom = -hoegde/2;
+        this._kameraHUD.updateProjectionMatrix();
+    }
+
+    teikn(breidde, hoegde, controls) {
+        //this._hudBitmap.clearRect(0, 0, breidde, hoegde);
+        this._hudBitmap.clearRect(breidde/2, 0, breidde, hoegde/2);
+        this._hudBitmap.fillText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
+        this._hudBitmap.strokeText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
+
+        this._hudTekstur.needsUpdate = true;
     }
 
     get scene() {

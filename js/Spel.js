@@ -124,10 +124,10 @@ export default class Spel {
             this.camera.aspect = window.innerWidth / window.innerHeight;
             this.camera.updateProjectionMatrix();
 
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            //Oppdater HUD kamera
+            this.hud.oppdaterKameraNyeDimensjonar(window.innerWidth, window.innerHeight);
 
-            //TODO oppdater HUD kamera
-            //this.hud.cameraHUD.
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
 
             //Spel.controls.handleResize();
         }, false);
@@ -294,9 +294,7 @@ export default class Spel {
         this.stats.update();
 
         //oppdater hud:
-        this.hud.bitmap.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        this.hud.bitmap.fillText("x: " + Math.round(Spel.controls.getObject().position.x) + " y: " + Math.round(Spel.controls.getObject().position.y) + " z: " + Math.round(Spel.controls.getObject().position.z), window.innerWidth-175, 75);
-        this.hud.tekstur.needsUpdate = true;
+        this.hud.teikn(window.innerWidth, window.innerHeight, Spel.controls);
 
         // render this._scene:
         this.renderer.render(this._scene, this.camera);
