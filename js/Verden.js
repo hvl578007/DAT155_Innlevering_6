@@ -2,11 +2,13 @@
 
 import LysLager from "./lights/LysLager.js";
 import { GLTFLoader } from "./loaders/GLTFLoader.js";
+import { OBJLoader } from "./loaders/OBJLoader.js"
 import InnsjoCubeMap from "./materials/InnsjoCubeMap.js";
 import GoldenGun from "./models/GoldenGun.js";
 import Skydome from "./skydome/Skydome.js";
 import Innsjo from "./terrain/Innsjo.js";
 import ModellImport from "./terrain/ModellImport.js";
+import Hus from "./terrain/objects/Hus.js";
 import Stein from "./terrain/objects/Stein.js";
 import Terreng from "./terrain/Terreng.js";
 import Vatn from "./terrain/Vatn.js";
@@ -130,6 +132,12 @@ export default class Verden {
         scene.add(this.stein);
 
         // --------------------------------------------------------------------------------------
+
+        /**
+         * legger til et hus
+         */
+         this.hus = new Hus(scene, this.loader);
+        //--------------------------------------------------------------------------------------
 
     }
 
