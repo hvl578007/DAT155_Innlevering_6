@@ -9,6 +9,7 @@ import Innsjo from "./terrain/Innsjo.js";
 import ModellImport from "./terrain/ModellImport.js";
 import BlokkHinderloye from "./terrain/objects/BlokkHinderloype.js";
 import Hus from "./terrain/objects/Hus.js";
+import JapanskBygning from "./terrain/objects/JapanskBygning.js"
 import Stein from "./terrain/objects/Stein.js";
 import Terreng from "./terrain/Terreng.js";
 import Vatn from "./terrain/Vatn.js";
@@ -142,9 +143,11 @@ export default class Verden {
         scene.add(this.blokkHinderloype);
 
         /**
-         * legger til et hus
+         * legger til urbane ting 
          */
          this.hus = new Hus(scene, this.loader);
+
+         this.japanskBygning = new JapanskBygning(scene, this.loader);
         //--------------------------------------------------------------------------------------
 
     }
