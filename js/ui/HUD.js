@@ -62,8 +62,8 @@ export default class HUD {
     teikn(breidde, hoegde, controls) {
         //this._hudBitmap.clearRect(0, 0, breidde, hoegde);
         this._hudBitmap.clearRect(breidde/2, 0, breidde, hoegde/2);
-        this._hudBitmap.fillText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
-        this._hudBitmap.strokeText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
+        this._hudBitmap.fillText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y-3) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
+        this._hudBitmap.strokeText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y-3) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
         this._hudBitmap.clearRect(0, hoegde/2, breidde/2, hoegde);
         this._hudBitmap.drawImage(this.ammoHUDImg, 50, hoegde-150, 100, 100);
         this._hudBitmap.fillText("Ammo: 12", 175, hoegde-100);
