@@ -40,6 +40,10 @@ export default class Verden {
         scene.add(retningslys);
         scene.add(retningslys.target);
 
+        // ambient lys
+        const ambientLys = lys.lagAmbientLys();
+        scene.add(ambientLys);
+
         // --------------------------------------------------------------------------------------
 
         /**

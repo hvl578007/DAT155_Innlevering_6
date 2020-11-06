@@ -1,6 +1,6 @@
 "use strict";
 
-import { DirectionalLight } from "../lib/three.module.js";
+import { DirectionalLight, AmbientLight } from "../lib/three.module.js";
 
 export default class LysLager {
 
@@ -35,6 +35,11 @@ export default class LysLager {
         retningslys.target.position.set(0, 0, 0);
 
         return retningslys;
+    }
+
+    lagAmbientLys() {
+        let ambLys = new AmbientLight(0x404040, 1.0); // soft white light
+        return ambLys;
     }
     
 }
