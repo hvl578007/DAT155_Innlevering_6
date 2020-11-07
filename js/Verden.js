@@ -149,9 +149,9 @@ export default class Verden {
         /**
          * legger til urbane ting 
          */
-         this.hus = new Hus(scene, this.loader);
+        this.hus = new Hus(scene, this.loader);
 
-         this.japanskBygning = new JapanskBygning(scene, this.loader);
+        //this.japanskBygning = new JapanskBygning(scene, this.loader);
         //--------------------------------------------------------------------------------------
 
     }
