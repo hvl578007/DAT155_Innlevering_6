@@ -1,9 +1,11 @@
 "use strict";
 
+import { Object3D } from "./lib/three.module.js";
 import LysLager from "./lights/LysLager.js";
 import { GLTFLoader } from "./loaders/GLTFLoader.js";
 import InnsjoCubeMap from "./materials/InnsjoCubeMap.js";
 import GoldenGun from "./models/GoldenGun.js";
+import Lommelykt from "./models/Lommelykt.js";
 import Skydome from "./skydome/Skydome.js";
 import Innsjo from "./terrain/Innsjo.js";
 import ModellImport from "./terrain/ModellImport.js";
@@ -61,12 +63,19 @@ export default class Verden {
 
         /**
          * Legg til golden gun på kameraet / spelaren
+         * TODO eigen spelar-klasse
          */
 
         //laster inn eit gltf-objekt (golden gun)
         this.loader = new GLTFLoader();
-        this._goldengun = new GoldenGun(kamera, this.loader);
+        //this._goldengun = new GoldenGun(kamera, this.loader);
+        this._goldengun = new Object3D();
 
+        /**
+         * Legg til lommelykt på kameraet / spelaren
+         * TODO flytt ut i eigen spelar-klasse!
+         */
+        this.lommelykt = new Lommelykt(kamera, this.loader);
         // --------------------------------------------------------------------------------------
 
         /**

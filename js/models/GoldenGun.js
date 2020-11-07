@@ -9,7 +9,7 @@ export default class GoldenGun {
             './resources/models/james_bond_golden_gun/scene.gltf',
             (object) => {
                 //henter ut objektet
-                const gun = object.scene.children[0];
+                let gun = object.scene.children[0];
 
                 //vil lage skygge og få skygge
                 gun.traverse((child) => {
@@ -35,6 +35,8 @@ export default class GoldenGun {
 
                 //legg til våpnet under kamera slik at den følger med der
                 kamera.add(object.scene);
+
+                this._gun = gun;
             }
         );
     }
@@ -45,5 +47,9 @@ export default class GoldenGun {
 
     set mixer(mixer) {
         this._mixer = mixer;
+    }
+
+    get gun() {
+        return this._gun;
     }
 }
