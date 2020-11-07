@@ -1,13 +1,17 @@
 "use strict";
 
-import { BoxBufferGeometry, CubeTextureLoader, InstancedMesh, Matrix4, MeshPhongMaterial, MeshStandardMaterial, RepeatWrapping } from "../../lib/three.module.js";
+import { BoxBufferGeometry, CubeTextureLoader, InstancedMesh, Matrix4, MeshPhongMaterial, MeshStandardMaterial, RepeatWrapping, TextureLoader } from "../../lib/three.module.js";
 
 export default class BlokkHinderloye extends InstancedMesh {
 
     constructor() {
 
-        const antInstanced = 500;
+        const antInstanced = 100;
 
+        let loader = new TextureLoader();
+        loader.setPath('./resources/textures/blokk_hinderloype/');
+
+        /*
         let kubeTekstur = new CubeTextureLoader()
             .setPath('./resources/textures/blokk_hinderloype/')
             .load([
@@ -18,33 +22,48 @@ export default class BlokkHinderloye extends InstancedMesh {
                 'chiseled_quartz_block_top.png',
                 'chiseled_quartz_block_top.png'
             ]);
+        */
 
         //kubeTekstur.wrapS = RepeatWrapping;
         //kubeTekstur.wrapT = RepeatWrapping;
         //kubeTekstur.repeat.set(100);
         //kubeTekstur.anisotropy = 16;
 
-        let geometri = new BoxBufferGeometry(8, 8, 8, 1, 1, 1);
+        let materialeTabell = [
+            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
+            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
+            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
+            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
+            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block_top.png')}),
+            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block_top.png')})
+        ];
 
-        let materiale = new MeshPhongMaterial({
+        let geometri = new BoxBufferGeometry(10, 10, 10, 1, 1, 1);
+
+        /*let materiale = new MeshPhongMaterial({
             //envMap: kubeTekstur
             color: 0x03fc3d,
+            envMap: kubeTekstur
             //flatShading: true
         });
+        */
 
-        super(geometri, materiale, antInstanced);
+        super(geometri, materialeTabell, antInstanced);
 
-        this.castShadow = true;
+        //TODO skygge på andre instancedmesh fungerer ikkje...
+        //Må kanskje bytte til instancedgeometry?
+
         this.recieveShadow = true;
+        this.castShadow = true;
 
         //let i = 0;
 
         //TODO - sjekk ut eksemplet og "stjel kode derfrå!"
         for (let i = 0; i < antInstanced; i++ ) {
 
-            let x = 300 + Math.floor( Math.random() * 10 - 10 ) * 20;
+            let x = 300 + Math.floor( Math.random() * 10 - 10 ) * 10;
             let y = Math.floor( Math.random() * 10 ) * 10 + 10;
-            let z = 300 + Math.floor( Math.random() * 10 - 10 ) * 20;
+            let z = 300 + Math.floor( Math.random() * 10 - 10 ) * 10;
             
             let matrise = new Matrix4().setPosition(x, y, z);
 
