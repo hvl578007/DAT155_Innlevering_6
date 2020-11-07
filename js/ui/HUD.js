@@ -42,12 +42,12 @@ export default class HUD {
         this.ammoHUDImg = document.getElementById('ammoHUD');
 
         //teikner statiske ting
-        this._hudBitmap.drawImage(this.goldengunHUDImg, 50, 150, 100, 61);
-        this._hudBitmap.fillText("1 - GGun", 40, 250);
-        this._hudBitmap.strokeText("1 - GGun", 40, 250);
+        this._hudBitmap.drawImage(this.goldengunHUDImg, 55, 150, 100, 61);
+        this._hudBitmap.fillText("1", 20, 195);
+        this._hudBitmap.strokeText("1", 20, 195);
         this._hudBitmap.drawImage(this.lommelyktHUDImg, 70, 350, 80, 80);
-        this._hudBitmap.fillText("2 - Lommelykt", 40, 475);
-        this._hudBitmap.strokeText("2 - Lommelykt", 40, 475);
+        this._hudBitmap.fillText("2", 20, 405);
+        this._hudBitmap.strokeText("2", 20, 405);
         
     }
 
@@ -66,7 +66,8 @@ export default class HUD {
         this._hudBitmap.strokeText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y-3) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
         this._hudBitmap.clearRect(0, hoegde/2, breidde/2, hoegde);
         this._hudBitmap.drawImage(this.ammoHUDImg, 50, hoegde-150, 100, 100);
-        this._hudBitmap.fillText("Ammo: 12", 175, hoegde-100);
+        this._hudBitmap.fillText("Ammo: 12", 170, hoegde-80);
+        this._hudBitmap.strokeText("Ammo: 12", 170, hoegde-80);
         this._hudTekstur.needsUpdate = true;
     }
 
