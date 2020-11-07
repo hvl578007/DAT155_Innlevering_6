@@ -50,10 +50,7 @@ export default class BlokkHinderloye extends InstancedMesh {
 
         super(geometri, materialeTabell, antInstanced);
 
-        //TODO skygge på andre instancedmesh fungerer ikkje...
-        //Må kanskje bytte til instancedgeometry?
-
-        this.recieveShadow = true;
+        this.receiveShadow = true;
         this.castShadow = true;
 
         //let i = 0;
