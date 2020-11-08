@@ -1,6 +1,7 @@
 "use strict";
 
-import { SpotLight } from "../lib/three.module.js";
+import { Group, PointLight, SpotLight } from "../lib/three.module.js";
+import Spel from "../Spel.js";
 
 
 export default class Lommelykt {
@@ -21,7 +22,7 @@ export default class Lommelykt {
                 });
 
                 //posisjonerer lommelykta
-                lommelykt.position.z = -1.7;
+                lommelykt.position.z = -1.5;
                 lommelykt.position.y = -0.7;
                 lommelykt.position.x = 1;
                 //roterer våpnet litt 
@@ -30,13 +31,26 @@ export default class Lommelykt {
                 lommelykt.scale.multiplyScalar(1/2);
 
                 //legg til lommelykta under kamera slik at den følger med der
-                kamera.add(object.scene);
 
-                this._spotLys = this.lagSpotLysInternt();
-                this._spotLys.position.copy(lommelykt.position);
+                let lommelyktGruppe = new Group();
+                kamera.add(lommelyktGruppe);
 
-                kamera.add(this._spotLys);
-                kamera.add(this._spotLys.target);
+                lommelyktGruppe.add(object.scene);
+
+                //kamera.add(object.scene);
+
+                let spotLys = new SpotLight(0xf8c377, 3, 75, 0.5, 0.9, 2);
+                //let pointLys = new PointLight(0xf8c377, 1, 40);
+                //this._spotLys = this.lagSpotLysInternt();
+
+                lommelyktGruppe.add(spotLys);
+                spotLys.position.set(0,0,1);
+
+                spotLys.target = kamera;
+
+                //Spel.controls.getObject().add(spotLys.target);
+                //pointLys.target.position.set(0,0,-1);
+                lommelyktGruppe.visible = true;
 
             }
         );
@@ -48,8 +62,9 @@ export default class Lommelykt {
      */
     lagSpotLysInternt() {
         //TODO lek litt med parametre her!
-        let spotLys = new SpotLight(0xf8c377, 1, 40, Math.PI/2, 0, 1);
+        let spotLys = new SpotLight(0xf8c377, 1, 40);
 
+        /*
         spotLys.castShadow = true;
 
         spotLys.shadow.mapSize.width = 1024;
@@ -58,8 +73,9 @@ export default class Lommelykt {
         spotLys.shadow.camera.near = 0.1;
         spotLys.shadow.camera.far = 200;
         spotLys.shadow.camera.fov = 30;
+        */
 
-        spotLys.target.position.set(0,0,-1);
+        //spotLys.target.position.set(0,0,1);
 
         return spotLys;
     }
