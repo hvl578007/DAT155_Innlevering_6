@@ -13,7 +13,7 @@ export default class Sol {
 
         let solSprite = new Sprite(solMaterial);
         solSprite.scale.set(20,20);
-        solSprite.position.set(0,100,0);
+        solSprite.position.set(300,300,300);
 
         scene.add(solSprite);
     
