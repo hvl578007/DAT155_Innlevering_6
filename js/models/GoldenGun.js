@@ -1,6 +1,6 @@
 "use strict";
 
-import { AnimationMixer } from "../lib/three.module.js";
+import { AnimationMixer, Group } from "../lib/three.module.js";
 
 export default class GoldenGun {
 
@@ -34,7 +34,9 @@ export default class GoldenGun {
                 gun.scale.multiplyScalar(1/40);
 
                 //legg til våpnet under kamera slik at den følger med der
-                kamera.add(object.scene);
+                this._gunGruppe = new Group();
+                kamera.add(this._gunGruppe);
+                this._gunGruppe.add(object.scene);
 
                 this._gun = gun;
             }
@@ -51,5 +53,9 @@ export default class GoldenGun {
 
     get gun() {
         return this._gun;
+    }
+
+    vis(verdi) {
+        if(this._gunGruppe) this._gunGruppe.visible = verdi;
     }
 }

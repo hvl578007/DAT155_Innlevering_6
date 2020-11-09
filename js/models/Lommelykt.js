@@ -32,51 +32,33 @@ export default class Lommelykt {
 
                 //legg til lommelykta under kamera slik at den følger med der
 
-                let lommelyktGruppe = new Group();
-                kamera.add(lommelyktGruppe);
+                this._lommelyktGruppe = new Group();
+                kamera.add(this._lommelyktGruppe);
 
-                lommelyktGruppe.add(object.scene);
+                this._lommelyktGruppe.add(object.scene);
 
                 //kamera.add(object.scene);
 
                 let spotLys = new SpotLight(0xf8c377, 3, 75, 0.5, 0.9, 2);
-                //let pointLys = new PointLight(0xf8c377, 1, 40);
-                //this._spotLys = this.lagSpotLysInternt();
 
-                lommelyktGruppe.add(spotLys);
+                this._lommelyktGruppe.add(spotLys);
                 spotLys.position.set(0,0,1);
 
                 spotLys.target = kamera;
 
-                //Spel.controls.getObject().add(spotLys.target);
-                //pointLys.target.position.set(0,0,-1);
-                lommelyktGruppe.visible = true;
+                this._lommelyktGruppe.visible = false;
 
             }
         );
 
     }
 
-    /**
-     * NB! Berre for intern bruk!
-     */
-    lagSpotLysInternt() {
-        //TODO lek litt med parametre her!
-        let spotLys = new SpotLight(0xf8c377, 1, 40);
-
-        /*
-        spotLys.castShadow = true;
-
-        spotLys.shadow.mapSize.width = 1024;
-        spotLys.shadow.mapSize.height = 1024;
-
-        spotLys.shadow.camera.near = 0.1;
-        spotLys.shadow.camera.far = 200;
-        spotLys.shadow.camera.fov = 30;
-        */
-
-        //spotLys.target.position.set(0,0,1);
-
-        return spotLys;
+    get lommelyktGruppe() {
+        return this._lommelyktGruppe;
     }
+
+    vis(verdi) {
+        if(this._lommelyktGruppe) this._lommelyktGruppe.visible = verdi;
+    }
+
 }

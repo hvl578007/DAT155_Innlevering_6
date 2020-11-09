@@ -61,22 +61,8 @@ export default class Verden {
 
         // --------------------------------------------------------------------------------------
 
-        /**
-         * Legg til golden gun på kameraet / spelaren
-         * TODO eigen spelar-klasse
-         */
-
-        //laster inn eit gltf-objekt (golden gun)
+        //lagar ein loader
         this.loader = new GLTFLoader();
-        //this._goldengun = new GoldenGun(kamera, this.loader);
-        this._goldengun = new Object3D();
-
-        /**
-         * Legg til lommelykt på kameraet / spelaren
-         * TODO flytt ut i eigen spelar-klasse!
-         */
-        this.lommelykt = new Lommelykt(kamera, this.loader);
-        // --------------------------------------------------------------------------------------
 
         /**
          * Add trees
@@ -163,6 +149,8 @@ export default class Verden {
         //this.japanskBygning = new JapanskBygning(scene, this.loader);
         //--------------------------------------------------------------------------------------
 
+        //for ping-pong av cube map
+        this.count = 0;
     }
 
     get goldengun() {
@@ -183,5 +171,28 @@ export default class Verden {
 
     get innsjoCubeMap() {
         return this._innsjoCubeMap;
+    }
+
+    bevegPaaVatn(time) {
+        if (this._vatn.matShader) this._vatn.matShader.uniforms.time.value = time;
+        if (this._innsjo.matShader) this._innsjo.matShader.uniforms.time.value = time;
+    }
+
+    oppdaterCubeMapVatn(renderer, scene) {
+        //oppdatering av cube map / env map
+        // pingpong
+        renderer.autoClear = true;
+        this._innsjo.hidden = true;
+        if (this.count % 2 === 0) {
+            this._innsjoCubeMap.cubeCamera1.update(renderer, scene);
+            this._innsjo.vassMateriale.envMap = this._innsjoCubeMap.cubeRenderTarget1.texture;
+        } else {
+            this._innsjoCubeMap.cubeCamera2.update(renderer, scene);
+            this._innsjo.vassMateriale.envMap = this._innsjoCubeMap.cubeRenderTarget2.texture;
+        }
+        this._innsjo.hidden = false;
+        renderer.autoClear = false;
+
+        this.count++;
     }
 }

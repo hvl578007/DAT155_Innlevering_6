@@ -11,6 +11,7 @@ import {
     Texture,
     Vector3, WebGLRenderer
 } from './lib/three.module.js';
+import Spelar from './Spelar.js';
 import HUD from './ui/HUD.js';
 import Verden from './Verden.js';
 
@@ -167,14 +168,21 @@ export default class Spel {
 
         this.hud = new HUD(window.innerHeight, window.innerWidth);
 
+        // --------------------------------------------------------------------------------------
+
+        /**
+         * Lagar spelar
+         * TODO fiks...
+         */
+        this.spelar = new Spelar(this.camera, this.hud);
+
+        // --------------------------------------------------------------------------------------
+
         //berre lagrar canvas som ein objekt-variabel
         this._canvas = this.renderer.domElement;
 
         //TODO endre denne (Date.now() ???)
         this.time = 0;
-        //for ping-pong av cube map
-        this.count = 0;
-
     }
 
     /**
@@ -190,12 +198,14 @@ export default class Spel {
         //if (this.time > 12.5) this.time = 0;
 
         //oppdaterer tid-variabel i vass-shaderen for å få til bevegelse
-        if (this.verden.vatn.matShader) this.verden.vatn.matShader.uniforms.time.value = this.time;
-        if (this.verden.innsjo.matShader) this.verden.innsjo.matShader.uniforms.time.value = this.time;
+        this.verden.bevegPaaVatn(this.time);
+        //if (this.verden.vatn.matShader) this.verden.vatn.matShader.uniforms.time.value = this.time;
+        //if (this.verden.innsjo.matShader) this.verden.innsjo.matShader.uniforms.time.value = this.time;
 
         //animerer våpnet
         //TODO fiks slik at det bare skjer ein gong
-        if (this.verden.goldengun.mixer) this.verden.goldengun.mixer.update(delta);
+        this.spelar.oppdaterGunAnimation(delta);
+        //if (this.verden.goldengun.mixer) this.verden.goldengun.mixer.update(delta);
 
         //hogda ein er i terrenget
         let terrengPosHogde = this.verden.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z);
@@ -274,21 +284,7 @@ export default class Spel {
 
         }
 
-        //oppdatering av cube map / env map
-        // pingpong
-        this.renderer.autoClear = true;
-        this.verden.innsjo.hidden = true;
-        if (this.count % 2 === 0) {
-            this.verden.innsjoCubeMap.cubeCamera1.update(this.renderer, this._scene);
-            this.verden.innsjo.vassMateriale.envMap = this.verden.innsjoCubeMap.cubeRenderTarget1.texture;
-        } else {
-            this.verden.innsjoCubeMap.cubeCamera2.update(this.renderer, this._scene);
-            this.verden.innsjo.vassMateriale.envMap = this.verden.innsjoCubeMap.cubeRenderTarget2.texture;
-        }
-        this.verden.innsjo.hidden = false;
-        this.renderer.autoClear = false;
-
-        this.count++;
+        this.verden.oppdaterCubeMapVatn(this.renderer, this.scene);
 
         //oppdaterer fps-stats
         this.stats.update();
@@ -307,7 +303,7 @@ export default class Spel {
 
     //TODO i eigen klasse eller noko?
     /**
-     * Metode for å aktivere bevegelse
+     * Metode for å aktivere bevegelse og andre tastetrykk
      * @param {*} event 
      */
     onKeyDown(event) {
@@ -339,6 +335,16 @@ export default class Spel {
                 this.move.canJump = false;
                 break;
 
+            case 49: // 1
+                //todo gjer litt finare?
+                //fjern metoden?
+                this.spelar.byttTilVaapen(1);
+                break;
+
+            case 50: // 2
+                //todo gjer litt finare?
+                this.spelar.byttTilVaapen(2);
+                break;
         }
 
     }
