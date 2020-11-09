@@ -8,7 +8,7 @@ export default class Skydome extends Mesh {
 
         let skydomeGeometry = new SphereGeometry(550,64,64);
         let skydomeMaterial = new MeshBasicMaterial({
-            map: new TextureLoader().load('./resources/textures/sky.jpg'),
+            map: new TextureLoader().load('./resources/textures/skydomeTexture.jpg'),
             fog: false,
             side: BackSide
         });

@@ -123,7 +123,7 @@ export default class Verden {
         let skyDome = new Skydome();
         //endrer slik at skydomen rendres innenfra
         //skyDome.material.side = BackSide; //<-- flytta denne inn i klassen heller
-        //skyDome.position.y = 5000; //<- denne setninga flytter skydome veldig høgt opp = kan ikkje sjå den lengre
+        skyDome.position.y = 40; 
 
         //legger til skydome i this._scenen
         scene.add(skyDome);
