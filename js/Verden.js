@@ -15,6 +15,7 @@ import JapanskBygning from "./terrain/objects/JapanskBygning.js"
 import Stein from "./terrain/objects/Stein.js";
 import Terreng from "./terrain/Terreng.js";
 import Vatn from "./terrain/Vatn.js";
+import Sol from "./lights/Sol.js"
 
 /**
  * Set opp verdenen i scenegrafen
@@ -31,8 +32,10 @@ export default class Verden {
     constructor(scene, kamera, objekterHoppePaa) {
 
         /**
-         * Legg til lys i scenen
+         * Legg til lys og sol i scenen
          */
+
+        this.Sol = new Sol(scene);
 
         let lys = new LysLager();
 
