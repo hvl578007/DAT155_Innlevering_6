@@ -13,7 +13,7 @@ export default class LysLager {
 
     lagRetningslys() {
         let retningslys = new DirectionalLight(0xffffff);
-        retningslys.position.set(300, 600, 300);
+        //retningslys.position.set(300, 600, 300);
 
         retningslys.castShadow = true;
 

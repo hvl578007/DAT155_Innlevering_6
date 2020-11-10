@@ -35,15 +35,14 @@ export default class Verden {
          * Legg til lys og sol i scenen
          */
 
-        this.Sol = new Sol(scene);
-
         let lys = new LysLager();
 
-        //lagar retningsbasert lys
-        const retningslys = lys.lagRetningslys();
+        this.Sol = new Sol(scene, lys);
 
-        scene.add(retningslys);
-        scene.add(retningslys.target);
+        //lagar retningsbasert lys
+        //const retningslys = lys.lagRetningslys();
+        //scene.add(retningslys);
+        //scene.add(retningslys.target);
 
         // ambient lys
         const ambientLys = lys.lagAmbientLys();
@@ -197,5 +196,9 @@ export default class Verden {
         renderer.autoClear = false;
 
         this.count++;
+    }
+
+    bevegSol(tSol){
+        this.Sol.beveg(tSol);
     }
 }

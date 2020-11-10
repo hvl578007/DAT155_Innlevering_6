@@ -183,6 +183,8 @@ export default class Spel {
 
         //TODO endre denne (Date.now() ???)
         this.time = 0;
+
+        this.tSol = 0;
     }
 
     /**
@@ -283,6 +285,11 @@ export default class Spel {
             }
 
         }
+
+        //får solen til å gå i en ellipse rundt banen
+
+        this.verden.bevegSol(this.tSol);
+        this.tSol = (this.tSol + 0.001)%1.000;
 
         this.verden.oppdaterCubeMapVatn(this.renderer, this.scene);
 
