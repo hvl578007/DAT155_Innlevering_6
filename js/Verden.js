@@ -209,6 +209,7 @@ export default class Verden {
 
     bevegSol(tSol){
         this.Sol.beveg(tSol);
+    }    
     bevegMenneske(t) {
         this.menneske.beveg(t);
     }
