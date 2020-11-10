@@ -16,6 +16,7 @@ import Stein from "./terrain/objects/Stein.js";
 import Terreng from "./terrain/Terreng.js";
 import Vatn from "./terrain/Vatn.js";
 import Sol from "./lights/Sol.js"
+import MenneskeModell from "./terrain/objects/MenneskeModell.js";
 
 /**
  * Set opp verdenen i scenegrafen
@@ -151,6 +152,14 @@ export default class Verden {
         //this.japanskBygning = new JapanskBygning(scene, this.loader);
         //--------------------------------------------------------------------------------------
 
+        /**
+         * Lagar menneskemodell som går i ein ellipse?
+         */
+
+        this.menneske = new MenneskeModell(this._terreng, this.loader);
+
+        //--------------------------------------------------------------------------------------
+
         //for ping-pong av cube map
         this.count = 0;
     }
@@ -200,5 +209,7 @@ export default class Verden {
 
     bevegSol(tSol){
         this.Sol.beveg(tSol);
+    bevegMenneske(t) {
+        this.menneske.beveg(t);
     }
 }

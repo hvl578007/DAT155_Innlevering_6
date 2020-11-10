@@ -185,6 +185,7 @@ export default class Spel {
         this.time = 0;
 
         this.tSol = 0;
+        this.t = 0;
     }
 
     /**
@@ -290,6 +291,9 @@ export default class Spel {
 
         this.verden.bevegSol(this.tSol);
         this.tSol = (this.tSol + 0.001)%1.000;
+        //beveg på menneske:
+        this.verden.bevegMenneske(this.t);
+        this.t = (this.t + 0.001)%1.000;
 
         this.verden.oppdaterCubeMapVatn(this.renderer, this.scene);
 
@@ -301,7 +305,9 @@ export default class Spel {
 
         // render this._scene:
         this.renderer.render(this._scene, this.camera);
+        this.renderer.autoClear = false;
         this.renderer.render(this.hud.scene, this.hud.kamera);
+        this.renderer.autoClear = true;
 
         requestAnimationFrame(this.loop.bind(this));
 
