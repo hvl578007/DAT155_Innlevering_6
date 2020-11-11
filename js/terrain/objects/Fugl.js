@@ -1,6 +1,6 @@
 "use strict";
 
-import { BoxBufferGeometry, BufferGeometry, CatmullRomCurve3, EllipseCurve, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Vector3 } from "../../lib/three.module.js";
+import { BoxBufferGeometry, BufferGeometry, CatmullRomCurve3, Curve, EllipseCurve, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Vector3 } from "../../lib/three.module.js";
 
 export default class Fugl {
 
@@ -37,13 +37,12 @@ export default class Fugl {
         //this.kurve = new EllipseCurve(0, 0, 10, 20, 0, 2*Math.PI, false, 0);
         this.kurve = new CatmullRomCurve3([
             new Vector3(10, 10, 10),
-            new Vector3(-10, 10, 10),
+            new Vector3(-10, 8, 10),
             new Vector3(-10, 8, -10),
-            new Vector3(10, 5, -10)
-        ]);
-        this.kurve.closed = true;
+            new Vector3(10, 10, -10)
+        ], true, 'catmullrom', 1.0);
 
-        const punkter = this.kurve.getPoints(200);
+        const punkter = this.kurve.getPoints(100);
 
         const geometri = new BufferGeometry().setFromPoints(punkter);
 
