@@ -19,8 +19,8 @@ export default class LysLager {
 
         //Set up shadow properties for the light
         //litt høg res på shadow texture... 8k ;)
-        //14 = 16k, 13 = 8k, 12 = 4k
-        let shadowRes = Math.pow(2, 12);
+        //14 = 16k, 13 = 8k, 12 = 4k, 11 = 2k
+        let shadowRes = Math.pow(2, 11);
         retningslys.shadow.mapSize.width = shadowRes;
         retningslys.shadow.mapSize.height = shadowRes;
         retningslys.shadow.camera.near = 0.5;
