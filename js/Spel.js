@@ -312,9 +312,9 @@ export default class Spel {
         }
 
         //beveg på menneske:
-        this.verden.bevegMenneske(this.t);
-        this.t = (this.t + 0.001) % 1.000;
-
+        this.verden.bevegFugl(this.t);
+        this.t = (this.t >= 1) ? 0 : this.t += 0.002;
+        //this.t = (this.t + 0.001) % 1.000;
 
         this.verden.oppdaterCubeMapVatn(this.renderer, this.scene);
 

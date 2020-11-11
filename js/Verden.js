@@ -16,7 +16,7 @@ import Stein from "./terrain/objects/Stein.js";
 import Terreng from "./terrain/Terreng.js";
 import Vatn from "./terrain/Vatn.js";
 import Sol from "./lights/Sol.js"
-import MenneskeModell from "./terrain/objects/MenneskeModell.js";
+import Fugl from "./terrain/objects/Fugl.js";
 
 /**
  * Set opp verdenen i scenegrafen
@@ -154,10 +154,10 @@ export default class Verden {
         //--------------------------------------------------------------------------------------
 
         /**
-         * Lagar menneskemodell som går i ein ellipse?
+         * Lagar fugl som går i ein bane?
          */
 
-        this.menneske = new MenneskeModell(this._terreng, this.loader);
+        this.fugl = new Fugl(scene, this.loader);
 
         //--------------------------------------------------------------------------------------
 
@@ -209,7 +209,7 @@ export default class Verden {
     bevegSol(tSol){
         this.sol.beveg(tSol);
     }    
-    bevegMenneske(t) {
-        this.menneske.beveg(t);
+    bevegFugl(t) {
+        this.fugl.beveg(t);
     }
 }
