@@ -184,8 +184,17 @@ export default class Spel {
         //TODO endre denne (Date.now() ???)
         this.time = 0;
 
+        //variablar for å flytte på ting i kurver
         this.tSol = 0;
         this.t = 0;
+
+        //variabel for andre ting som skal bevege på seg og slikt:
+        this.interaksjon = {
+            solFram: false,
+            solTilbake: false,
+            harByttaVaapen: false,
+            aktivtVaapen: 1
+        };
     }
 
     /**
@@ -287,13 +296,25 @@ export default class Spel {
 
         }
 
-        //får solen til å gå i en ellipse rundt banen
+        //bytte av våpen:
+        if (this.interaksjon.harByttaVaapen) {
+            this.spelar.byttTilVaapen(this.interaksjon.aktivtVaapen);
+            this.interaksjon.harByttaVaapen = false;
+        }
 
-        this.verden.bevegSol(this.tSol);
-        this.tSol = (this.tSol + 0.001)%1.000;
+        //får solen til å gå i en ellipse rundt banen
+        if (this.interaksjon.solFram || this.interaksjon.solTilbake) {
+            let retning = Number(this.interaksjon.solFram) - Number(this.interaksjon.solTilbake);
+            this.verden.bevegSol(this.tSol);
+            this.tSol = this.tSol + 0.001*retning;
+            if (this.tSol < 0) this.tSol = 0;
+            if (this.tSol > 0.5) this.tSol = 0.5;
+        }
+
         //beveg på menneske:
         this.verden.bevegMenneske(this.t);
-        this.t = (this.t + 0.001)%1.000;
+        this.t = (this.t + 0.001) % 1.000;
+
 
         this.verden.oppdaterCubeMapVatn(this.renderer, this.scene);
 
@@ -348,15 +369,32 @@ export default class Spel {
                 this.move.canJump = false;
                 break;
 
+            case 88: // x
+                this.interaksjon.solFram = true;
+                break;
+
+            case 90: // z
+                this.interaksjon.solTilbake = true;
+                break;
+
             case 49: // 1
                 //todo gjer litt finare?
                 //fjern metoden?
-                this.spelar.byttTilVaapen(1);
+                //this.spelar.byttTilVaapen(1);
+                this.interaksjon.aktivtVaapen = 1;
+                this.interaksjon.harByttaVaapen = true;
                 break;
 
             case 50: // 2
                 //todo gjer litt finare?
-                this.spelar.byttTilVaapen(2);
+                //this.spelar.byttTilVaapen(2);
+                this.interaksjon.aktivtVaapen = 2;
+                this.interaksjon.harByttaVaapen = true;
+                break;
+
+            case 82: // r
+                //TODO enable ray-tracing renderer?
+
                 break;
         }
 
@@ -389,6 +427,14 @@ export default class Spel {
             case 39: // right
             case 68: // d
                 this.move.right = false;
+                break;
+
+            case 88: // x
+                this.interaksjon.solFram = false;
+                break;
+
+            case 90: // z
+                this.interaksjon.solTilbake = false;
                 break;
 
         }
