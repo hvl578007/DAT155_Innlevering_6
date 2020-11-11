@@ -38,7 +38,8 @@ export default class Verden {
 
         let lys = new LysLager();
 
-        this.Sol = new Sol(scene, lys);
+        this.sol = new Sol(scene, lys);
+        this.sol.beveg(0);
 
         //lagar retningsbasert lys
         //const retningslys = lys.lagRetningslys();
@@ -192,7 +193,6 @@ export default class Verden {
     oppdaterCubeMapVatn(renderer, scene) {
         //oppdatering av cube map / env map
         // pingpong
-        renderer.autoClear = true;
         this._innsjo.hidden = true;
         if (this.count % 2 === 0) {
             this._innsjoCubeMap.cubeCamera1.update(renderer, scene);
@@ -202,13 +202,12 @@ export default class Verden {
             this._innsjo.vassMateriale.envMap = this._innsjoCubeMap.cubeRenderTarget2.texture;
         }
         this._innsjo.hidden = false;
-        renderer.autoClear = false;
 
         this.count++;
     }
 
     bevegSol(tSol){
-        this.Sol.beveg(tSol);
+        this.sol.beveg(tSol);
     }    
     bevegMenneske(t) {
         this.menneske.beveg(t);

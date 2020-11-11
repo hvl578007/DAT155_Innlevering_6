@@ -11,6 +11,7 @@ export default class Spelar {
 
         //set aktivtvåpen til 1
         this.aktivtVaapen = 1;
+        this.ammo = 12;
 
         /**
          * Legg til golden gun på kameraet / spelaren
@@ -57,5 +58,9 @@ export default class Spelar {
 
     oppdaterGunAnimation(delta) {
         if(this.goldengun.mixer) this.goldengun.mixer.update(delta);
+    }
+
+    skytVaapen() {
+        
     }
 }

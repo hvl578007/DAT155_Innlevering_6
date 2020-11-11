@@ -30,6 +30,7 @@ export default class BlokkHinderloye extends InstancedMesh {
         //kubeTekstur.anisotropy = 16;
 
         let materialeTabell = [
+            //todo meshphong for mindre kraft?
             new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
             new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
             new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
