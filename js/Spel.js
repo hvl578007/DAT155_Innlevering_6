@@ -7,8 +7,10 @@ import {
     Clock,
     FogExp2, Mesh, MeshBasicMaterial, OrthographicCamera, PCFSoftShadowMap, PerspectiveCamera,
     PlaneGeometry,
+    Ray,
     Raycaster, Scene,
     Texture,
+    Vector2,
     Vector3, WebGLRenderer
 } from './lib/three.module.js';
 import Spelar from './Spelar.js';
@@ -176,7 +178,6 @@ export default class Spel {
          * TODO fiks...
          */
         this.spelar = new Spelar(this.camera, this.hud);
-        //this.spelar.leggTilTingAaSkytePaa(this.verden.fugl.modell);
 
         // --------------------------------------------------------------------------------------
 
@@ -199,6 +200,9 @@ export default class Spel {
             aktivtVaapen: 1,
             harSkutt: false
         };
+
+        //raycaster for picking / ser kva ein ser på:
+        //this.raycasterPicking = new Raycaster();
 
     }
 
@@ -310,6 +314,13 @@ export default class Spel {
             if (this.tSol > 0.5) this.tSol = 0.5;
         }
 
+        //sjekker kor ein ser: drepte fps hehe, må legge alt i tabell eller noko enn å bruke rekursiv
+        //this.raycasterPicking.setFromCamera(new Vector2(), Spel.controls.getObject());
+        //let intersectionsPicking = this.raycasterPicking.intersectObject(this._scene, true);
+        //let objektSerPaa = "";
+        //if (intersectionsPicking.length > 0) objektSerPaa = intersectionsPicking[intersectionsPicking.length-1].namn;
+
+        //skyter på fuglen i scenen (eller sjekker om ein gjer det)
         if (this.interaksjon.harSkutt) {
             this.spelar.skytVaapen(Spel.controls.getObject(), this.verden.fugl.modell);
             this.interaksjon.harSkutt = false;
@@ -382,22 +393,22 @@ export default class Spel {
                 break;
 
             case 49: // 1
-                //todo gjer litt finare?
-                //fjern metoden?
-                //this.spelar.byttTilVaapen(1);
                 this.interaksjon.aktivtVaapen = 1;
                 this.interaksjon.harByttaVaapen = true;
                 break;
 
             case 50: // 2
-                //todo gjer litt finare?
-                //this.spelar.byttTilVaapen(2);
                 this.interaksjon.aktivtVaapen = 2;
                 this.interaksjon.harByttaVaapen = true;
                 break;
 
             case 82: // r
-                //TODO enable ray-tracing renderer?
+                //reload
+                this.spelar.reloadVaapen();
+                break;
+
+            case 91: //??? fiks keycode
+                //todo enable raytracing?
 
                 break;
         }

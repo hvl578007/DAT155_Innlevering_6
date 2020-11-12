@@ -79,6 +79,8 @@ export default class HUD {
         this._hudBitmap.strokeText("2", 20, 305);
         this._hudBitmap.fillText("Z/X - Sol", 20, 400);
         this._hudBitmap.strokeText("Z/X - Sol", 20, 400);
+        this._hudBitmap.fillRect(breidde/2-2, hoegde/2-2, 4, 4);
+        //this._hudBitmap.fillText(objektSerPaa, breidde/2, 50);
         this._hudTekstur.needsUpdate = true;
     }
 

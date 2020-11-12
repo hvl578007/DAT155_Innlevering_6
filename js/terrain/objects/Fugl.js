@@ -5,28 +5,27 @@ import { AnimationMixer, BoxBufferGeometry, BufferGeometry, CatmullRomCurve3, Cu
 export default class Fugl {
 
     constructor(scene, loader) {
-        
+
         //TODO importer modell
         loader.load('./resources/models/low_poly_bird_animated/scene.gltf', (object) => {
-            let modell = object.scene.children[0];
+            this._modell = object.scene.children[0];
 
-                modell.traverse((child) => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                    }
-                });
+            this._modell.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
 
             //object.scene.scale.multiplyScalar(1/100);
             this._mixer = new AnimationMixer(object.scene);
-            object.animations.forEach((clip) => {this._mixer.clipAction(clip).play()});
-            
+            object.animations.forEach((clip) => { this._mixer.clipAction(clip).play() });
 
-            modell.scale.multiplyScalar(1/2);
+
+            this._modell.scale.multiplyScalar(1 / 2);
 
             //modell.position.y = 5;
             //modell.rotateZ(Math.PI);
-            this._modell = modell;
             scene.add(object.scene);
         });
 
@@ -51,7 +50,7 @@ export default class Fugl {
 
         const geometri = new BufferGeometry().setFromPoints(punkter);
 
-        const materiale = new LineBasicMaterial({color: 0xff0000});
+        const materiale = new LineBasicMaterial({ color: 0xff0000 });
 
         const ellipse = new Line(geometri, materiale);
 
@@ -59,7 +58,7 @@ export default class Fugl {
         //scene.add(this.boks);
 
         this.axis = new Vector3();
-        this.up = new Vector3(0,1,0);
+        this.up = new Vector3(0, 1, 0);
     }
 
     beveg(t) {

@@ -29,11 +29,7 @@ export default class Spelar {
         this.lommelykt = new Lommelykt(kamera, this.loader);
         // --------------------------------------------------------------------------------------
 
-        //raycaster for skyting:
         this.raycast = new Raycaster();
-        //this.raycast.far = 100;
-
-        this.tingAaSkytePaa = [];
 
     }
 
@@ -70,10 +66,11 @@ export default class Spelar {
 
     skytVaapen(kamera, skalSkyte) {
         if (this.ammo > 0) {
+            this.spelAvLyd(1);
             //spel av lyd, noko raycaste-greier
             this.raycast.setFromCamera(new Vector2(), kamera);
-            //let intersections = this.raycast.intersectObject(this.tingAaSkytePaa);
-            let intersections = this.raycast.intersectObject(skalSkyte);
+            let intersections = this.raycast.intersectObject(skalSkyte, true);
+            //let intersections = this.raycast.intersectObject(skalSkyte);
 
             let traff = intersections.length > 0;
 
@@ -87,7 +84,21 @@ export default class Spelar {
 
     }
 
+    spelAvLyd(id) {
+        switch (id) {
+            case 1: //skudd
+                
+                break;
+
+            case 2: //reload
+        
+            default:
+                break;
+        }
+    }
+
     reloadVaapen() {
+        this.spelAvLyd(2);
         this.ammo = 12;
     }
 
@@ -99,7 +110,4 @@ export default class Spelar {
         this._ammo = ammo;
     }
 
-    leggTilTingAaSkytePaa(objekt) {
-        this.tingAaSkytePaa.push(objekt);
-    }
 }
