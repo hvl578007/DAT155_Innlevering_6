@@ -157,7 +157,7 @@ export default class Verden {
          * Lagar fugl som går i ein bane?
          */
 
-        this.fugl = new Fugl(scene, this.loader);
+        this._fugl = new Fugl(scene, this.loader);
 
         //--------------------------------------------------------------------------------------
 
@@ -185,6 +185,14 @@ export default class Verden {
         return this._innsjoCubeMap;
     }
 
+    get fugl() {
+        return this._fugl;
+    }
+
+    set fugl(fugl) {
+        this._fugl = fugl;
+    }
+
     bevegPaaVatn(time) {
         if (this._vatn.matShader) this._vatn.matShader.uniforms.time.value = time;
         if (this._innsjo.matShader) this._innsjo.matShader.uniforms.time.value = time;
@@ -206,10 +214,15 @@ export default class Verden {
         this.count++;
     }
 
+    animerFugl(delta) {
+        //todo animer fugl
+        if (this._fugl.mixer) this._fugl.mixer.update(delta*2);
+    }
+
     bevegSol(tSol){
         this.sol.beveg(tSol);
     }    
     bevegFugl(t) {
-        this.fugl.beveg(t);
+        this._fugl.beveg(t);
     }
 }

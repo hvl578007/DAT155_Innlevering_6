@@ -100,6 +100,7 @@ export default class Spel {
 
         document.addEventListener('keydown', this.onKeyDown.bind(this), false);
         document.addEventListener('keyup', this.onKeyUp.bind(this), false);
+        document.addEventListener('mousedown', this.onMouseDown.bind(this), false);
 
         //lagar raycaster for å sjå om ein er oppå eit objekt
         this.raycaster = new Raycaster(new Vector3(), new Vector3(0, -1, 0), 0, 3);
@@ -175,6 +176,7 @@ export default class Spel {
          * TODO fiks...
          */
         this.spelar = new Spelar(this.camera, this.hud);
+        //this.spelar.leggTilTingAaSkytePaa(this.verden.fugl.modell);
 
         // --------------------------------------------------------------------------------------
 
@@ -185,7 +187,8 @@ export default class Spel {
         this.time = 0;
 
         //variablar for å flytte på ting i kurver
-        this.tSol = 0;
+        this.tSol = 0.1;
+        this.verden.bevegSol(this.tSol);
         this.t = 0;
 
         //variabel for andre ting som skal bevege på seg og slikt:
@@ -193,8 +196,10 @@ export default class Spel {
             solFram: false,
             solTilbake: false,
             harByttaVaapen: false,
-            aktivtVaapen: 1
+            aktivtVaapen: 1,
+            harSkutt: false
         };
+
     }
 
     /**
@@ -211,23 +216,23 @@ export default class Spel {
 
         //oppdaterer tid-variabel i vass-shaderen for å få til bevegelse
         this.verden.bevegPaaVatn(this.time);
-        //if (this.verden.vatn.matShader) this.verden.vatn.matShader.uniforms.time.value = this.time;
-        //if (this.verden.innsjo.matShader) this.verden.innsjo.matShader.uniforms.time.value = this.time;
+
+        //animerer fuglen:
+        this.verden.animerFugl(delta);
 
         //animerer våpnet
         //TODO fiks slik at det bare skjer ein gong
         this.spelar.oppdaterGunAnimation(delta);
-        //if (this.verden.goldengun.mixer) this.verden.goldengun.mixer.update(delta);
 
+        //TODO legg dette i spelar?!
         //hogda ein er i terrenget
         let terrengPosHogde = this.verden.terreng.terrengGeometri.getHeightAt(this.camera.position.x, this.camera.position.z);
 
         //styrer med kontroll av kameraet
         //henta frå https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
+        if (Spel.controls.isLocked) {
 
-        if (Spel.controls.isLocked === true) {
-
-            //TODO legg til objekter (i objects) ein kan hoppe på
+            //gjer klar raycasteren slik at den kan sjekke om ein er over eit objekt ein kan stå på
             this.raycaster.ray.origin.copy(Spel.controls.getObject().position);
             this.raycaster.ray.origin.y -= 3;
 
@@ -235,13 +240,11 @@ export default class Spel {
 
             let onObject = intersections.length > 0;
 
+            //oppdatere hastigheitar i x/y/z-retning
             this.velocity.x -= this.velocity.x * 10.0 * delta;
             this.velocity.z -= this.velocity.z * 10.0 * delta;
 
             this.velocity.y -= 9.8 * 125.0 * delta; // 100.0 = mass
-
-            //this.leanVelocity.x -= this.leanVelocity.x * 10.0 * delta;
-            //this.leanVelocity.y -= this.leanVelocity.y * 10.0 * delta;
 
             //positiv om ein går framover, negativt elles
             this.direction.z = Number(this.move.forward) - Number(this.move.backward);
@@ -249,11 +252,7 @@ export default class Spel {
             this.direction.x = Number(this.move.right) - Number(this.move.left);
             this.direction.normalize(); // this ensures consistent movements in all directions
 
-            //head bobbing:
-            //får verdi frå -1 til 1
-            //fungerer ikkje, må ha disconnect mellom kamera og bevegelse då tipper eg...
-            //kanskje om eg brukte velocity?
-            //let headBob = Math.sin(this.time)/2;
+            //head bobbing: droppa
 
             if (this.move.forward || this.move.backward) {
                 this.velocity.z -= this.direction.z * 400.0 * delta;
@@ -311,6 +310,11 @@ export default class Spel {
             if (this.tSol > 0.5) this.tSol = 0.5;
         }
 
+        if (this.interaksjon.harSkutt) {
+            this.spelar.skytVaapen(Spel.controls.getObject(), this.verden.fugl.modell);
+            this.interaksjon.harSkutt = false;
+        }
+
         //beveg på menneske:
         this.verden.bevegFugl(this.t);
         this.t = (this.t >= 1) ? 0 : this.t += 0.002;
@@ -322,7 +326,7 @@ export default class Spel {
         this.stats.update();
 
         //oppdater hud:
-        this.hud.teikn(window.innerWidth, window.innerHeight, Spel.controls);
+        this.hud.teikn(window.innerWidth, window.innerHeight, Spel.controls, this.spelar);
 
         // render this._scene:
         this.renderer.render(this._scene, this.camera);
@@ -439,6 +443,17 @@ export default class Spel {
 
         }
 
+    }
+
+    /**
+     * Metode for å hente trykk
+     * @param {*} event 
+     */
+    onMouseDown(event) {
+        if(Spel.controls.isLocked && this.interaksjon.aktivtVaapen === 1) {
+            this.interaksjon.harSkutt = true;
+            console.log("skøyt");
+        }
     }
 
     get scene() {

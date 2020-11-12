@@ -41,14 +41,17 @@ export default class HUD {
         this.lommelyktHUDImg = document.getElementById("lommelyktHUD");
         this.ammoHUDImg = document.getElementById('ammoHUD');
 
+        /*
         //teikner statiske ting
         this._hudBitmap.drawImage(this.goldengunHUDImg, 55, 150, 100, 61);
         this._hudBitmap.fillText("1", 20, 195);
         this._hudBitmap.strokeText("1", 20, 195);
-        this._hudBitmap.drawImage(this.lommelyktHUDImg, 70, 350, 80, 80);
-        this._hudBitmap.fillText("2", 20, 405);
-        this._hudBitmap.strokeText("2", 20, 405);
-        
+        this._hudBitmap.drawImage(this.lommelyktHUDImg, 70, 250, 80, 80);
+        this._hudBitmap.fillText("2", 20, 305);
+        this._hudBitmap.strokeText("2", 20, 305);
+        this._hudBitmap.fillText("Z/X - Sol", 20, 400);
+        this._hudBitmap.strokeText("Z/X - Sol", 20, 400);
+        */
     }
 
     oppdaterKameraNyeDimensjonar(breidde, hoegde) {
@@ -59,15 +62,23 @@ export default class HUD {
         this._kameraHUD.updateProjectionMatrix();
     }
 
-    teikn(breidde, hoegde, controls) {
-        //this._hudBitmap.clearRect(0, 0, breidde, hoegde);
-        this._hudBitmap.clearRect(breidde/2, 0, breidde, hoegde/2);
+    teikn(breidde, hoegde, controls, spelar) {
+        this._hudBitmap.clearRect(0, 0, breidde, hoegde);
+        //this._hudBitmap.clearRect(breidde/2, 0, breidde, hoegde/2);
         this._hudBitmap.fillText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y-3) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
         this._hudBitmap.strokeText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y-3) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
-        this._hudBitmap.clearRect(0, hoegde/2, breidde/2, hoegde);
+        //this._hudBitmap.clearRect(0, hoegde/2, breidde/2, hoegde);
         this._hudBitmap.drawImage(this.ammoHUDImg, 50, hoegde-150, 100, 100);
-        this._hudBitmap.fillText("Ammo: 12", 170, hoegde-80);
-        this._hudBitmap.strokeText("Ammo: 12", 170, hoegde-80);
+        this._hudBitmap.fillText("Ammo: " + spelar.ammo, 170, hoegde-80);
+        this._hudBitmap.strokeText("Ammo: " + spelar.ammo, 170, hoegde-80);
+        this._hudBitmap.drawImage(this.goldengunHUDImg, 55, 150, 100, 61);
+        this._hudBitmap.fillText("1", 20, 195);
+        this._hudBitmap.strokeText("1", 20, 195);
+        this._hudBitmap.drawImage(this.lommelyktHUDImg, 70, 250, 80, 80);
+        this._hudBitmap.fillText("2", 20, 305);
+        this._hudBitmap.strokeText("2", 20, 305);
+        this._hudBitmap.fillText("Z/X - Sol", 20, 400);
+        this._hudBitmap.strokeText("Z/X - Sol", 20, 400);
         this._hudTekstur.needsUpdate = true;
     }
 

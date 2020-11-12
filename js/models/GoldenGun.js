@@ -1,6 +1,6 @@
 "use strict";
 
-import { AnimationMixer, Group } from "../lib/three.module.js";
+import { AnimationMixer, Group, LoopOnce } from "../lib/three.module.js";
 
 export default class GoldenGun {
 
@@ -22,7 +22,11 @@ export default class GoldenGun {
                 //lagrar animasjonar som er i modellen i ein mixer som ein bruke til å spele av i loop-metoden
                 this._mixer = new AnimationMixer(object.scene);
                 
-                object.animations.forEach((clip) => {this._mixer.clipAction(clip).play()});
+                this.action = this._mixer.clipAction(object.animations[0]);
+                this.action.setLoop(LoopOnce);
+                this.action.clampWhenFinished = true;
+                //this.action.stop();
+                this.action.play();
 
                 //posisjonerer våpnet
                 gun.position.z = -1.7;
@@ -57,5 +61,10 @@ export default class GoldenGun {
 
     vis(verdi) {
         if(this._gunGruppe) this._gunGruppe.visible = verdi;
+    }
+
+    spelActionIgjen() {
+        this.action.stop();
+        this.action.play();
     }
 }
