@@ -39,7 +39,7 @@ export default class HUD {
         //henter inn bilder
         this.goldengunHUDImg = document.getElementById('goldengunHUD');
         this.lommelyktHUDImg = document.getElementById("lommelyktHUD");
-        this.ammoHUDImg = document.getElementById('ammoHUD');
+        //this.ammoHUDImg = document.getElementById('ammoHUD');
 
         /*
         //teikner statiske ting
@@ -68,9 +68,9 @@ export default class HUD {
         this._hudBitmap.fillText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y-3) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
         this._hudBitmap.strokeText("x: " + Math.round(controls.getObject().position.x) + " y: " + Math.round(controls.getObject().position.y-3) + " z: " + Math.round(controls.getObject().position.z), breidde-350, 75);
         //this._hudBitmap.clearRect(0, hoegde/2, breidde/2, hoegde);
-        this._hudBitmap.drawImage(this.ammoHUDImg, 50, hoegde-150, 100, 100);
-        this._hudBitmap.fillText("Ammo: " + spelar.ammo, 170, hoegde-80);
-        this._hudBitmap.strokeText("Ammo: " + spelar.ammo, 170, hoegde-80);
+        //this._hudBitmap.drawImage(this.ammoHUDImg, 50, hoegde-150, 100, 100);
+        this._hudBitmap.fillText("Ammo: " + spelar.ammo, 80, hoegde-80);
+        this._hudBitmap.strokeText("Ammo: " + spelar.ammo, 80, hoegde-80);
         this._hudBitmap.drawImage(this.goldengunHUDImg, 55, 150, 100, 61);
         this._hudBitmap.fillText("1", 20, 195);
         this._hudBitmap.strokeText("1", 20, 195);

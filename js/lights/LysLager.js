@@ -23,13 +23,13 @@ export default class LysLager {
         let shadowRes = Math.pow(2, 11);
         retningslys.shadow.mapSize.width = shadowRes;
         retningslys.shadow.mapSize.height = shadowRes;
-        retningslys.shadow.camera.near = 0.5;
+        retningslys.shadow.camera.near = 20;
         retningslys.shadow.camera.far = 800;
         //width av terreng/2 gir ca. ok?
-        retningslys.shadow.camera.left = -300;
-        retningslys.shadow.camera.right = 300;
-        retningslys.shadow.camera.top = 300;
-        retningslys.shadow.camera.bottom = -300;
+        retningslys.shadow.camera.left = -400;
+        retningslys.shadow.camera.right = 400;
+        retningslys.shadow.camera.top = 400;
+        retningslys.shadow.camera.bottom = -400;
 
         // Set direction
         retningslys.target.position.set(0, 0, 0);
