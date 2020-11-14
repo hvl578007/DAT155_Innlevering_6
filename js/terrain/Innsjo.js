@@ -23,7 +23,7 @@ export default class Innsjo extends Mesh {
         
         let vassMateriale = new MeshPhongMaterial({
             transparent: true,
-            opacity: 1.0,
+            opacity: 0.95,
             shininess: 100,
             //map: vassTekstur,
             envMap: envMapParam
