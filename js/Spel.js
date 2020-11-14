@@ -201,9 +201,6 @@ export default class Spel {
             harSkutt: false
         };
 
-        //raycaster for picking / ser kva ein ser på:
-        //this.raycasterPicking = new Raycaster();
-
     }
 
     /**
@@ -339,9 +336,12 @@ export default class Spel {
         //oppdater hud:
         this.hud.teikn(window.innerWidth, window.innerHeight, Spel.controls, this.spelar);
 
+        console.log(this.camera);
+
         // render this._scene:
         this.renderer.render(this._scene, this.camera);
         this.renderer.autoClear = false;
+        // render hud
         this.renderer.render(this.hud.scene, this.hud.kamera);
         this.renderer.autoClear = true;
 
