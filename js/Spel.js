@@ -1,6 +1,11 @@
 "use strict";
 
-import { PointerLockControls } from './controls/PointerLockControls.js';
+import { PointerLockControls } from './lib/PointerLockControls.js';
+import { BloomPass } from './lib/postprocessing/BloomPass.js';
+import { BokehPass } from './lib/postprocessing/BokehPass.js';
+import { EffectComposer } from './lib/postprocessing/EffectComposer.js';
+import { FilmPass } from './lib/postprocessing/FilmPass.js';
+import { RenderPass } from './lib/postprocessing/RenderPass.js';
 import Stats from './lib/Stats.js';
 import {
     AxesHelper,
@@ -201,6 +206,35 @@ export default class Spel {
             harSkutt: false
         };
 
+        /**
+         * Post-processing
+         */
+        this.composer = new EffectComposer(this.renderer);
+
+        this.composer.addPass(new RenderPass(this._scene, this.camera));
+
+        const bloomPass = new BloomPass(
+            1,
+            25,
+            4,
+            256
+        );
+        //this.composer.addPass(bloomPass);
+
+        const bokehPass = new BokehPass(this._scene, this.camera, {
+
+        });
+        this.composer.addPass(bokehPass);
+
+        const filmPass = new FilmPass(
+            0.15,
+            0.025,
+            648,
+            false
+        );
+        filmPass.renderToScreen = true;
+        this.composer.addPass(filmPass);
+
     }
 
     /**
@@ -336,10 +370,9 @@ export default class Spel {
         //oppdater hud:
         this.hud.teikn(window.innerWidth, window.innerHeight, Spel.controls, this.spelar);
 
-        console.log(this.camera);
-
         // render this._scene:
-        this.renderer.render(this._scene, this.camera);
+        //this.renderer.render(this._scene, this.camera);
+        this.composer.render(delta);
         this.renderer.autoClear = false;
         // render hud
         this.renderer.render(this.hud.scene, this.hud.kamera);
@@ -406,11 +439,6 @@ export default class Spel {
                 //reload
                 this.spelar.reloadVaapen();
                 break;
-
-            case 91: //??? fiks keycode
-                //todo enable raytracing?
-
-                break;
         }
 
     }
@@ -463,7 +491,6 @@ export default class Spel {
     onMouseDown(event) {
         if(Spel.controls.isLocked && this.interaksjon.aktivtVaapen === 1) {
             this.interaksjon.harSkutt = true;
-            console.log("skøyt");
         }
     }
 
