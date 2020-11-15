@@ -1,6 +1,5 @@
 "use strict";
 
-import { AnimationMixer } from "../lib/three.module.js";
 import { GLTFLoader } from "../loaders/GLTFLoader.js";
 
 export default class ModellImport {
@@ -22,12 +21,12 @@ export default class ModellImport {
             // called when resource is loaded
             (object) => {
                 //område (x og z koordinatar, og distansen mellom dei = += talet)
-                for (let x = -400; x < 400; x += 50) {
-                    for (let z = -400; z < 400; z += 50) {
+                for (let x = -400; x < 400; x += 30) {
+                    for (let z = -400; z < 400; z += 30) {
 
                         //litt tilfeldig plassering rundt dei punkta
-                        const px = x + 1 + (12 * Math.random()) - 3;
-                        const pz = z + 1 + (12 * Math.random()) - 3;
+                        const px = x + this.randomGauss(x);
+                        const pz = z + this.randomGauss(z);
 
                         const height = terrengGeometri.getHeightAt(px, pz);
 
@@ -85,5 +84,21 @@ export default class ModellImport {
         );
 
         return objekt;
+    }
+
+    randomGauss() {
+        // See http://c-faq.com/lib/gaussian.html
+        // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+
+        var v1, v2, S;
+
+        do {
+            v1 = 2 * Math.random() - 1;
+            v2 = 2 * Math.random() - 1;
+            S = v1 * v1 + v2 * v2;
+        } while(S >= 1 || S == 0);
+
+        // Ideally alternate between v1 and v2
+        return v1 * Math.sqrt(-2 * Math.log(S) / S);
     }
 }
