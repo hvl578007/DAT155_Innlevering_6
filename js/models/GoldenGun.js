@@ -4,7 +4,7 @@ import { AnimationMixer, Group, LoopOnce } from "../lib/three.module.js";
 
 export default class GoldenGun {
 
-    constructor(kamera, gltfloader) {
+    constructor(kamera, gltfloader, ...lyder) {
         gltfloader.load(
             './resources/models/james_bond_golden_gun/scene.gltf',
             (object) => {
@@ -16,6 +16,9 @@ export default class GoldenGun {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
+                        lyder.forEach((lyd) => {
+                            child.add(lyd);
+                        });
                     }
                 });
 
@@ -41,6 +44,7 @@ export default class GoldenGun {
                 this._gunGruppe = new Group();
                 kamera.add(this._gunGruppe);
                 this._gunGruppe.add(object.scene);
+                
 
                 this._gun = gun;
             }

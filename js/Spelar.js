@@ -1,13 +1,12 @@
 "use strict";
 
-import { Raycaster, Vector2, Vector3 } from "./lib/three.module.js";
+import { AudioLoader, LoopOnce, PositionalAudio, Raycaster, Vector2, AudioListener } from "./lib/three.module.js";
 import { GLTFLoader } from "./loaders/GLTFLoader.js";
 import GoldenGun from "./models/GoldenGun.js";
 import Lommelykt from "./models/Lommelykt.js";
-import Spel from "./Spel.js";
 
 export default class Spelar {
-    constructor(kamera, hud) {
+    constructor(kamera) {
 
         this.loader = new GLTFLoader();
 
@@ -15,12 +14,7 @@ export default class Spelar {
         this.aktivtVaapen = 1;
         this._ammo = 12;
 
-        /**
-         * Legg til golden gun på kameraet / spelaren
-         * TODO eigen spelar-klasse
-         */
-        this.goldengun = new GoldenGun(kamera, this.loader);
-        //this._goldengun = new Object3D();
+        
 
         /**
          * Legg til lommelykt på kameraet / spelaren
@@ -30,6 +24,46 @@ export default class Spelar {
         // --------------------------------------------------------------------------------------
 
         this.raycast = new Raycaster();
+
+        /**
+         * Prøver meg på lyd...
+         */
+        /*
+        // Lyd på spelaren
+        this.lytter = new AudioListener();
+        kamera.add(this.lytter);
+
+        //lagar lyd1 (skudd)
+        this.lyd1 = new PositionalAudio(this.lytter);
+
+        //laster inn lyd
+        let audioLoader = new AudioLoader();
+
+        audioLoader.load('./resources/lyd/357_shot2.wav', (buffer) => {
+            this.lyd1.setBuffer(buffer);
+            this.lyd1.setRefDistance(2);
+            this.lyd1.loop = false;
+            this.lyd1.setVolume(0.5);
+        });
+
+        //lagar lyd 2 (reload)
+
+        this.lyd2 = new PositionalAudio(this.lytter);
+
+        audioLoader.load('./resources/lyd/reload1.wav', (buffer) => {
+            this.lyd2.setBuffer(buffer);
+            this.lyd2.setRefDistance(2);
+            this.lyd2.loop = false;
+            this.lyd2.setVolume(0.5);
+        });
+        */
+
+        /**
+         * Legg til golden gun på kameraet / spelaren
+         * TODO eigen spelar-klasse
+         */
+        this.goldengun = new GoldenGun(kamera, this.loader); //, [this.lyd1, this.lyd2]);
+        //this._goldengun = new Object3D();
 
     }
 
@@ -89,12 +123,11 @@ export default class Spelar {
     spelAvLyd(id) {
         switch (id) {
             case 1: //skudd
-                
+                //this.lyd1.play();
                 break;
 
             case 2: //reload
-        
-            default:
+                //this.lyd2.play();
                 break;
         }
     }
