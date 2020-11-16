@@ -29,23 +29,16 @@ export default class Fugl {
             scene.add(object.scene);
         });
 
-        /*
-        //lager liten boks
-        let boksGeo = new BoxBufferGeometry(2,2,2,1,1,1);
-        let boksMat = new MeshBasicMaterial({color: 0xff0000});
-        this.boks = new Mesh(boksGeo, boksMat);
-        this.boks.position.y = 5;
-        */
-
         //lager kurve den skal følgje
         //this.kurve = new EllipseCurve(0, 0, 10, 20, 0, 2*Math.PI, false, 0);
         this.kurve = new CatmullRomCurve3([
-            new Vector3(10, 25, 200),
-            new Vector3(-100, 24, 200),
-            new Vector3(-100, 26, 100),
-            new Vector3(10, 23, 100)
+            new Vector3(10, 30, 200),
+            new Vector3(-100, 46, 200),
+            new Vector3(-100, 44, 100),
+            new Vector3(10, 32, 100)
         ], true, 'catmullrom', 1.0);
 
+        /*
         const punkter = this.kurve.getPoints(100);
 
         const geometri = new BufferGeometry().setFromPoints(punkter);
@@ -55,7 +48,7 @@ export default class Fugl {
         const ellipse = new Line(geometri, materiale);
 
         scene.add(ellipse);
-        //scene.add(this.boks);
+        */
 
         this.axis = new Vector3();
         this.up = new Vector3(0, 1, 0);

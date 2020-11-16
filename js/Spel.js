@@ -353,7 +353,6 @@ export default class Spel {
 
         //skyter på fuglen i scenen (eller sjekker om ein gjer det)
         if (this.interaksjon.harSkutt) {
-            console.log("harskutt");
             let traff = this.spelar.skytVaapen(Spel.controls.getObject(), this.verden.fugl.modell);
             if (traff) {
                 this.verden.fugl.harBlittSkutt = true;
@@ -363,7 +362,7 @@ export default class Spel {
 
         //beveg på menneske:
         this.verden.bevegFugl(this.t, delta);
-        this.t = (this.t >= 1) ? 0 : this.t += 0.002;
+        this.t = (this.t >= 1) ? 0 : this.t += 0.0015;
         //this.t = (this.t + 0.001) % 1.000;
 
         this.verden.oppdaterCubeMapVatn(this.renderer, this.scene);

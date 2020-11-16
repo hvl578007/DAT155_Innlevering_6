@@ -12,8 +12,6 @@ export default class Innsjo extends Mesh {
         //vassGeometri.rotateX(-Math.PI / 2);
 
         //lagar materiale som responderer til lyset
-        
-        
         let vassMateriale = new MeshPhongMaterial({
             transparent: true,
             opacity: 0.95,
@@ -21,16 +19,6 @@ export default class Innsjo extends Mesh {
             //map: vassTekstur,
             envMap: envMapParam
         });
-        
-
-        /*
-        let vassMateriale = new MeshBasicMaterial({
-            envMap: envMapParam,
-            combine: MultiplyOperation,
-            reflectivity: 1
-        });
-        */
-
         
         //endrer materialshaderen før den skal kompilere
         //henta kode og slikt frå https://medium.com/@joshmarinacci/water-ripples-with-vertex-shaders-6a9ecbdf091f
