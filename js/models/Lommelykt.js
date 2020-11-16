@@ -9,7 +9,7 @@ export default class Lommelykt {
     constructor(kamera, gltfloader) {
 
         gltfloader.load(
-            './resources/models/worn_silver_flashlight/scene.gltf',
+            './resources/models/flashlight/scene.gltf',
             (object) => {
 
                 const lommelykt = object.scene.children[0];
@@ -28,7 +28,7 @@ export default class Lommelykt {
                 //roterer lommelykta litt 
                 lommelykt.rotation.z = 3.25;
                 //gjer lommelykta mindre for å ikkje klippe inn i ting
-                lommelykt.scale.multiplyScalar(1/2);
+                lommelykt.scale.multiplyScalar(1/54);
 
                 //legg til lommelykta under kamera slik at den følger med der
 
