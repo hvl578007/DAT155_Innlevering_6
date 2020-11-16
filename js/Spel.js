@@ -52,7 +52,7 @@ export default class Spel {
         // legg til tåke / fog på scenen:
         //TODO fiks farge og skydome?
         //this._scene.background = new TextureLoader().load('./resources/textures/Sky.jpg');
-        this._scene.fog = new FogExp2(0x2980B9, 0.005);
+        this._scene.fog = new FogExp2(0xb8cbd9, 0.005);
 
         // --------------------------------------------------------------------------------------
 
