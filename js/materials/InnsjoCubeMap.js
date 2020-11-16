@@ -9,7 +9,7 @@ export default class InnsjoCubeMap {
     constructor() {
 
         //lagar rendertarget 1 (brukar 2 for ping-pong effekt / double-buffer)
-        this._cubeRenderTarget1 = new WebGLCubeRenderTarget(1024, {
+        this._cubeRenderTarget1 = new WebGLCubeRenderTarget(256, {
             //anisotropy: 16
         });
 
@@ -20,7 +20,7 @@ export default class InnsjoCubeMap {
         //TODO ka y-pos?
         this._cubeCamera1.position.y = 1.5;
 
-        this._cubeRenderTarget2 = new WebGLCubeRenderTarget(1024, {
+        this._cubeRenderTarget2 = new WebGLCubeRenderTarget(256, {
             //anisotropy: 16
         });
 

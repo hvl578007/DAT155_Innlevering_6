@@ -31,12 +31,12 @@ export default class BlokkHinderloye extends InstancedMesh {
 
         let materialeTabell = [
             //todo meshphong for mindre kraft?
-            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
-            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
-            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
-            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block.png')}),
-            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block_top.png')}),
-            new MeshStandardMaterial({map: loader.load('chiseled_quartz_block_top.png')})
+            new MeshPhongMaterial({map: loader.load('chiseled_quartz_block.png')}),
+            new MeshPhongMaterial({map: loader.load('chiseled_quartz_block.png')}),
+            new MeshPhongMaterial({map: loader.load('chiseled_quartz_block.png')}),
+            new MeshPhongMaterial({map: loader.load('chiseled_quartz_block.png')}),
+            new MeshPhongMaterial({map: loader.load('chiseled_quartz_block_top.png')}),
+            new MeshPhongMaterial({map: loader.load('chiseled_quartz_block_top.png')})
         ];
 
         let geometri = new BoxBufferGeometry(10, 10, 10, 1, 1, 1);
