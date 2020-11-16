@@ -6,7 +6,7 @@ export default class Hus {
 
     constructor(scene, gltfloader){
         gltfloader.load(
-            './resources/models/hus1/scene.gltf',
+            './resources/models/hus2/scene.gltf',
             (object) => {
                 let hus = object.scene.children[0];
 
@@ -17,9 +17,9 @@ export default class Hus {
                     }
                 });
 
-                hus.position.z = 1.0;
-                hus.position.y = 1.0;
-                hus.position.x = 1.0;
+                hus.position.z = 200.0;
+                hus.position.y = 11.0;
+                hus.position.x = 100.0;
 
                 hus.scale.multiplyScalar(1/30);
 
