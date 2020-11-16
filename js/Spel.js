@@ -35,9 +35,9 @@ export default class Spel {
          */
         this._scene = new Scene();
 
-        const axesHelper = new AxesHelper(15);
-        axesHelper.position.y = 5;
-        this._scene.add(axesHelper);
+        //const axesHelper = new AxesHelper(15);
+        //axesHelper.position.y = 5;
+        //this._scene.add(axesHelper);
 
         this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
