@@ -6,13 +6,6 @@ export default class Innsjo extends Mesh {
 
     constructor(envMapParam) {
 
-        //laster inn vasstekstur
-        let vassTekstur = new TextureLoader().load('./resources/textures/watermap_minecraft.jpg');
-        //set at teksturen skal repetere (det er ein veldig liten tekstur)
-        vassTekstur.wrapS = RepeatWrapping;
-        vassTekstur.wrapT = RepeatWrapping;
-        vassTekstur.repeat.set(20, 20);
-
         //lagar geometri 100x100
         //TODO lek litt med inndelingar for å få det "betre"..
         let vassGeometri = new PlaneBufferGeometry(75, 75, 100, 100);
