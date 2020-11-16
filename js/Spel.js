@@ -279,7 +279,7 @@ export default class Spel {
             this.velocity.x -= this.velocity.x * 10.0 * delta;
             this.velocity.z -= this.velocity.z * 10.0 * delta;
 
-            this.velocity.y -= 9.8 * 125.0 * delta; // 100.0 = mass
+            this.velocity.y -= 9.8 * 125.0 * delta; // 125.0 = mass
 
             //positiv om ein går framover, negativt elles
             this.direction.z = Number(this.move.forward) - Number(this.move.backward);
@@ -353,12 +353,16 @@ export default class Spel {
 
         //skyter på fuglen i scenen (eller sjekker om ein gjer det)
         if (this.interaksjon.harSkutt) {
-            this.spelar.skytVaapen(Spel.controls.getObject(), this.verden.fugl.modell);
+            console.log("harskutt");
+            let traff = this.spelar.skytVaapen(Spel.controls.getObject(), this.verden.fugl.modell);
+            if (traff) {
+                this.verden.fugl.harBlittSkutt = true;
+            }
             this.interaksjon.harSkutt = false;
         }
 
         //beveg på menneske:
-        this.verden.bevegFugl(this.t);
+        this.verden.bevegFugl(this.t, delta);
         this.t = (this.t >= 1) ? 0 : this.t += 0.002;
         //this.t = (this.t + 0.001) % 1.000;
 

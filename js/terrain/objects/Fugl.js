@@ -19,8 +19,8 @@ export default class Fugl {
 
             //object.scene.scale.multiplyScalar(1/100);
             this._mixer = new AnimationMixer(object.scene);
-            object.animations.forEach((clip) => { this._mixer.clipAction(clip).play() });
-
+            this.action = this._mixer.clipAction(object.animations[0]);
+            this.action.play();
 
             this._modell.scale.multiplyScalar(1 / 2);
 
@@ -40,10 +40,10 @@ export default class Fugl {
         //lager kurve den skal følgje
         //this.kurve = new EllipseCurve(0, 0, 10, 20, 0, 2*Math.PI, false, 0);
         this.kurve = new CatmullRomCurve3([
-            new Vector3(10, 10, 10),
-            new Vector3(-10, 8, 10),
-            new Vector3(-10, 8, -10),
-            new Vector3(10, 10, -10)
+            new Vector3(10, 25, 200),
+            new Vector3(-100, 24, 200),
+            new Vector3(-100, 26, 100),
+            new Vector3(10, 23, 100)
         ], true, 'catmullrom', 1.0);
 
         const punkter = this.kurve.getPoints(100);
@@ -59,23 +59,35 @@ export default class Fugl {
 
         this.axis = new Vector3();
         this.up = new Vector3(0, 1, 0);
+        this._harBlittSkutt = false;
+        this.fartFall = 0;
     }
 
-    beveg(t) {
-        let pos = this.kurve.getPoint(t);
-        let tan = this.kurve.getTangent(t).normalize().multiplyScalar(-1);
+    beveg(t, delta, posOverBakken) {
+        if (!this._harBlittSkutt) {
+            let pos = this.kurve.getPoint(t);
+            let tan = this.kurve.getTangent(t).normalize().multiplyScalar(-1);
 
-        if (this._modell) {
-            //this.modUp = this.modell.up;
-            this.axis.crossVectors(this.up, tan).normalize();
-            let radians = Math.acos(this.up.dot(tan));
+            if (this._modell) {
+                //this.modUp = this.modell.up;
+                this.axis.crossVectors(this.up, tan).normalize();
+                let radians = Math.acos(this.up.dot(tan));
 
-            this._modell.position.copy(pos);
-            this._modell.quaternion.setFromAxisAngle(this.axis, radians);
-            //this.boks.quaternion.setFromAxisAngle(this.modAxis, radians);
-            //this.modell.lookAt(tan.add(this.modell.position));
+                this._modell.position.copy(pos);
+                this._modell.quaternion.setFromAxisAngle(this.axis, radians);
+                //this.boks.quaternion.setFromAxisAngle(this.modAxis, radians);
+                //this.modell.lookAt(tan.add(this.modell.position));
+            }
+        } else {
+            this.action.stop();
+            if (posOverBakken < this._modell.position.y) {
+                this.fartFall -= 9.8 * 5.0 * delta; // 5 = massen
+                this._modell.position.y += this.fartFall * delta;
+            } else {
+                this.fartFall = 0;
+                this._modell.position.y = posOverBakken;
+            }
         }
-
         //this.boks.position.copy(pos);
     }
 
@@ -93,5 +105,13 @@ export default class Fugl {
 
     set modell(modell) {
         this._modell = modell;
+    }
+
+    get harBlittSkutt() {
+        return this._harBlittSkutt;
+    }
+
+    set harBlittSkutt(verdi) {
+        this._harBlittSkutt = verdi;
     }
 }

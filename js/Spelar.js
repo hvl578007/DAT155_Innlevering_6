@@ -65,22 +65,24 @@ export default class Spelar {
     }
 
     skytVaapen(kamera, skalSkyte) {
+        let traff = false;
+
         if (this.ammo > 0) {
             this.spelAvLyd(1);
             //spel av lyd, noko raycaste-greier
             this.raycast.setFromCamera(new Vector2(), kamera);
+            //sjekker kva ein har evt treft (sjekke berre mot parameteren for å gjere det enkelt å søkje igjennom)
             let intersections = this.raycast.intersectObject(skalSkyte, true);
             //let intersections = this.raycast.intersectObject(skalSkyte);
 
-            let traff = intersections.length > 0;
+            //sjekker om ein traff
+            traff = intersections.length > 0;
 
-            if (traff) {
-                console.log("Traff fuglen!!");
-            }
-
-            //Spel.controls.getObject();
+            //minker ammo
             this.ammo > 0 ? this.ammo-- : this.ammo = 0;
         }
+
+        return traff;
 
     }
 

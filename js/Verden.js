@@ -22,7 +22,7 @@ import Fugl from "./terrain/objects/Fugl.js";
  * Set opp verdenen i scenegrafen
  */
 export default class Verden {
-    
+
     //skal den extende mesh? kanskje unødvendig
     /**
      * 
@@ -113,7 +113,7 @@ export default class Verden {
         let skyDome = new Skydome();
         //endrer slik at skydomen rendres innenfra
         //skyDome.material.side = BackSide; //<-- flytta denne inn i klassen heller
-        skyDome.position.y = 40; 
+        skyDome.position.y = 40;
 
         //legger til skydome i this._scenen
         scene.add(skyDome);
@@ -129,7 +129,7 @@ export default class Verden {
         this.stein.position.x = -10;
         this.stein.position.z = 50;
         this.stein.position.y = -3;
-        this.stein.rotation.x = (Math.PI/2);
+        this.stein.rotation.x = (Math.PI / 2);
 
         objekterHoppePaa.push(this.stein);
 
@@ -216,13 +216,16 @@ export default class Verden {
 
     animerFugl(delta) {
         //todo animer fugl
-        if (this._fugl.mixer) this._fugl.mixer.update(delta*2);
+        if (this._fugl.mixer) this._fugl.mixer.update(delta * 2);
     }
 
-    bevegSol(tSol){
+    bevegSol(tSol) {
         this.sol.beveg(tSol);
-    }    
-    bevegFugl(t) {
-        this._fugl.beveg(t);
+    }
+    bevegFugl(t, delta) {
+        if (this._fugl.modell) {
+            let posOverBakken = this._terreng.terrengGeometri.getHeightAt(this.fugl.modell.position.x, this.fugl.modell.position.z);
+            this._fugl.beveg(t, delta, posOverBakken);
+        }
     }
 }
