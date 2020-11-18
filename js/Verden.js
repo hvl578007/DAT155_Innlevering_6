@@ -76,7 +76,7 @@ export default class Verden {
 
         let modellImport = new ModellImport();
         //plasserer rundt trer i this._scenen (burde bruke terrenget heller)
-        modellImport.plasserTrer(this.terreng.terrengGeometri, scene);
+        modellImport.plasserTrer(this.terreng.terrengGeometri, this._terreng);
 
         // --------------------------------------------------------------------------------------
 
@@ -133,7 +133,7 @@ export default class Verden {
 
         objekterHoppePaa.push(this.stein);
 
-        scene.add(this.stein);
+        this._terreng.add(this.stein);
 
         // --------------------------------------------------------------------------------------
 
@@ -143,12 +143,12 @@ export default class Verden {
         this.blokkHinderloype = new BlokkHinderloye();
         objekterHoppePaa.push(this.blokkHinderloype);
 
-        scene.add(this.blokkHinderloype);
+        this._terreng.add(this.blokkHinderloype);
 
         /**
          * legger til urbane ting 
          */
-        this.hus = new Hus(scene, this.loader);
+        this.hus = new Hus(this._terreng, this.loader);
 
         //this.japanskBygning = new JapanskBygning(scene, this.loader);
         //--------------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ export default class Verden {
          * Lagar fugl som går i ein bane?
          */
 
-        this._fugl = new Fugl(scene, this.loader);
+        this._fugl = new Fugl(this._terreng, this.loader);
 
         //--------------------------------------------------------------------------------------
 

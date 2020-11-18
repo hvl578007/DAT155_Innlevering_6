@@ -4,7 +4,7 @@ import { AnimationMixer, BoxBufferGeometry, BufferGeometry, CatmullRomCurve3, Cu
 
 export default class Fugl {
 
-    constructor(scene, loader) {
+    constructor(terreng, loader) {
 
         //TODO importer modell
         loader.load('./resources/models/low_poly_bird_animated/scene.gltf', (object) => {
@@ -26,7 +26,7 @@ export default class Fugl {
 
             //modell.position.y = 5;
             //modell.rotateZ(Math.PI);
-            scene.add(object.scene);
+            terreng.add(object.scene);
         });
 
         //lager kurve den skal følgje

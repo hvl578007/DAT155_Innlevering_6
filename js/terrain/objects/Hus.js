@@ -4,7 +4,7 @@
 
 export default class Hus {
 
-    constructor(scene, gltfloader){
+    constructor(terreng, gltfloader){
         gltfloader.load(
             './resources/models/hus2/scene.gltf',
             (object) => {
@@ -23,7 +23,7 @@ export default class Hus {
 
                 hus.scale.multiplyScalar(1/30);
 
-                scene.add(object.scene);
+                terreng.add(object.scene);
             }
 
         );   

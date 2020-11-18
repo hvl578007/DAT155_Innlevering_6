@@ -10,7 +10,7 @@ export default class ModellImport {
 
     }
 
-    plasserTrer(terrengGeometri, scene) {
+    plasserTrer(terrengGeometri, terreng) {
 
         // instantiate a GLTFLoader:
         //const loader = new GLTFLoader();
@@ -48,7 +48,7 @@ export default class ModellImport {
 
                             tree.scale.multiplyScalar(5 + Math.random() * 1);
 
-                            scene.add(tree);
+                            terreng.add(tree);
                         }
 
                     }
