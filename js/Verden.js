@@ -200,10 +200,10 @@ export default class Verden {
         this._innsjo.hidden = true;
         if (this.count % 2 === 0) {
             this._innsjoCubeMap.cubeCamera1.update(renderer, scene);
-            this._innsjo.vassMateriale.envMap = this._innsjoCubeMap.cubeRenderTarget1.texture;
+            this._innsjo.vassMateriale.envMap = this._innsjoCubeMap.cubeRenderTarget2.texture;
         } else {
             this._innsjoCubeMap.cubeCamera2.update(renderer, scene);
-            this._innsjo.vassMateriale.envMap = this._innsjoCubeMap.cubeRenderTarget2.texture;
+            this._innsjo.vassMateriale.envMap = this._innsjoCubeMap.cubeRenderTarget1.texture;
         }
         this._innsjo.hidden = false;
 
