@@ -1,6 +1,6 @@
 "use strict";
 
-import { Mesh, MeshBasicMaterial, OrthographicCamera, PlaneBufferGeometry, PlaneGeometry, Scene, Texture } from "../lib/three.module.js";
+import { Mesh, MeshBasicMaterial, OrthographicCamera, PlaneBufferGeometry, Scene, Texture } from "../lib/three.module.js";
 
 export default class HUD {
 
@@ -32,7 +32,7 @@ export default class HUD {
         });
         materiale.transparent = true;
 
-        let planGeometri = new PlaneGeometry(breidde, hoegde);
+        let planGeometri = new PlaneBufferGeometry(breidde, hoegde);
         let plan = new Mesh(planGeometri, materiale);
         this._sceneHUD.add(plan);
 

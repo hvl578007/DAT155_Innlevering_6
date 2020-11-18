@@ -1,6 +1,6 @@
 "use strict";
 
-import { BoxBufferGeometry, CubeTextureLoader, InstancedMesh, Matrix4, MeshPhongMaterial, MeshStandardMaterial, RepeatWrapping, TextureLoader } from "../../lib/three.module.js";
+import { BoxBufferGeometry, InstancedMesh, Matrix4, MeshPhongMaterial, TextureLoader } from "../../lib/three.module.js";
 
 export default class BlokkHinderloye extends InstancedMesh {
 

@@ -8,14 +8,9 @@ import { FilmPass } from './lib/postprocessing/FilmPass.js';
 import { RenderPass } from './lib/postprocessing/RenderPass.js';
 import Stats from './lib/Stats.js';
 import {
-    AxesHelper,
     Clock,
-    FogExp2, Mesh, MeshBasicMaterial, OrthographicCamera, PCFSoftShadowMap, PerspectiveCamera,
-    PlaneGeometry,
-    Ray,
+    FogExp2, PCFSoftShadowMap, PerspectiveCamera,
     Raycaster, Scene,
-    Texture,
-    Vector2,
     Vector3, WebGLRenderer
 } from './lib/three.module.js';
 import Spelar from './Spelar.js';
@@ -340,7 +335,7 @@ export default class Spel {
         if (this.interaksjon.solFram || this.interaksjon.solTilbake) {
             let retning = Number(this.interaksjon.solFram) - Number(this.interaksjon.solTilbake);
             this.verden.bevegSol(this.tSol);
-            this.tSol = this.tSol + 0.001*retning;
+            this.tSol = this.tSol + 0.001 * retning;
             if (this.tSol < 0) this.tSol = 0;
             if (this.tSol > 0.5) this.tSol = 0.5;
         }
@@ -492,7 +487,7 @@ export default class Spel {
      * @param {*} event 
      */
     onMouseDown(event) {
-        if(Spel.controls.isLocked && this.interaksjon.aktivtVaapen === 1) {
+        if (Spel.controls.isLocked && this.interaksjon.aktivtVaapen === 1) {
             this.interaksjon.harSkutt = true;
         }
     }

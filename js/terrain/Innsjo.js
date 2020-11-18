@@ -1,6 +1,6 @@
 "use strict";
 
-import { Mesh, MeshBasicMaterial, MeshPhongMaterial, MeshStandardMaterial, MultiplyOperation, PlaneBufferGeometry, RepeatWrapping, TextureLoader } from "../lib/three.module.js";
+import { Mesh, MeshPhongMaterial, PlaneBufferGeometry } from "../lib/three.module.js";
 
 export default class Innsjo extends Mesh {
 

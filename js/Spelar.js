@@ -1,6 +1,6 @@
 "use strict";
 
-import { AudioLoader, LoopOnce, PositionalAudio, Raycaster, Vector2, AudioListener } from "./lib/three.module.js";
+import { AudioLoader, PositionalAudio, Raycaster, Vector2, AudioListener } from "./lib/three.module.js";
 import { GLTFLoader } from "./loaders/GLTFLoader.js";
 import GoldenGun from "./models/GoldenGun.js";
 import Lommelykt from "./models/Lommelykt.js";

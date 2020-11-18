@@ -1,6 +1,6 @@
 "use strict";
 
-import { AnimationMixer, BoxBufferGeometry, BufferGeometry, CatmullRomCurve3, Curve, EllipseCurve, Line, LineBasicMaterial, LoopOnce, Mesh, MeshBasicMaterial, Vector3 } from "../../lib/three.module.js";
+import { AnimationMixer, BufferGeometry, CatmullRomCurve3, Line, LineBasicMaterial, Vector3 } from "../../lib/three.module.js";
 
 export default class Fugl {
 
@@ -30,7 +30,6 @@ export default class Fugl {
         });
 
         //lager kurve den skal følgje
-        //this.kurve = new EllipseCurve(0, 0, 10, 20, 0, 2*Math.PI, false, 0);
         this.kurve = new CatmullRomCurve3([
             new Vector3(10, 30, 200),
             new Vector3(-100, 46, 200),

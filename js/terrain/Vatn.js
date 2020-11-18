@@ -1,7 +1,6 @@
 "use strict";
 
-import { DoubleSide, Mesh, MeshPhongMaterial, MeshStandardMaterial, PlaneBufferGeometry, RepeatWrapping, ShaderMaterial, TextureLoader } from "../lib/three.module.js";
-import VassMateriale from "../materials/VassMateriale.js";
+import { Mesh, MeshStandardMaterial, PlaneBufferGeometry, RepeatWrapping, TextureLoader } from "../lib/three.module.js";
 
 /**
  * @author Stian

@@ -1,8 +1,6 @@
 "use strict";
 
-import { Group, PointLight, SpotLight } from "../lib/three.module.js";
-import Spel from "../Spel.js";
-
+import { Group, SpotLight } from "../lib/three.module.js";
 
 export default class Lommelykt {
 

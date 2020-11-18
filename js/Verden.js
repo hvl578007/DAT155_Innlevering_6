@@ -1,17 +1,13 @@
 "use strict";
 
-import { Object3D } from "./lib/three.module.js";
 import LysLager from "./lights/LysLager.js";
 import { GLTFLoader } from "./loaders/GLTFLoader.js";
 import InnsjoCubeMap from "./materials/InnsjoCubeMap.js";
-import GoldenGun from "./models/GoldenGun.js";
-import Lommelykt from "./models/Lommelykt.js";
 import Skydome from "./skydome/Skydome.js";
 import Innsjo from "./terrain/Innsjo.js";
 import ModellImport from "./terrain/ModellImport.js";
 import BlokkHinderloye from "./terrain/objects/BlokkHinderloype.js";
 import Hus from "./terrain/objects/Hus.js";
-import JapanskBygning from "./terrain/objects/JapanskBygning.js"
 import Stein from "./terrain/objects/Stein.js";
 import Terreng from "./terrain/Terreng.js";
 import Vatn from "./terrain/Vatn.js";
